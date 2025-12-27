@@ -58,3 +58,8 @@ def submit_all(target: str, data: dict):
     meta = get_meta(target[:2].upper())
     requests.post(f"{SHEETBEST_URL}/tabs/{tabs[target]}", json={**data, "ID": meta["id"], "Date": meta["date"]})
     return {"id": meta["id"]}
+from fastapi.responses import FileResponse
+
+@app.get("/")
+async def read_index():
+    return FileResponse('index.html')
