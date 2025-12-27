@@ -57,11 +57,14 @@ def get_card(sid: str):
     if not res or not res[0].get("Link"): return {"status": "not_found"}
     return {"link": res[0]["Link"]}
 
-@app.patch("/api/members/upgrade/{sid}")
-def upgrade_member(sid: str):
-    requests.patch(f"{SHEET_URL}/tabs/Members/StudentID/{sid}", json={"UpReq": "TRUE"})
-    return {"status": "done"}
-
+@app.patch("/api/members/upgrade/{id}")
+def member_upgrade(id: str):
+    user_data = requests.get(f"{SHEET_URL}/tabs/Members/StudentID/{id}").json()
+    
+    if not user_data or "error" in user_data:
+        return {"status": "error", "message": "not_found"}, 404
+    return {"status": "success"}
+    
 @app.get("/api/members/points/{sid}")
 def get_points(sid: str):
     res = requests.get(f"{SHEET_URL}/tabs/Members/search?StudentID={sid}").json()
