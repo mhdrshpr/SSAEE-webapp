@@ -280,7 +280,7 @@ async function doCert() {
         document.getElementById('cRes').innerHTML = html;
     } catch (error) {
         console.error("Fetch Error:", error);
-        alert("خطا در برقراری ارتباط با سرور");
+        showMsg("خطا در برقراری ارتباط با سرور");
     } finally { 
         hideL(); 
     }
@@ -300,21 +300,21 @@ async function doCert() {
         const data = { Name: document.getElementById('mn').value, NationalID: document.getElementById('mi').value, StudentID: document.getElementById('ms').value };
         showL();
         const res = await fetch(`${API}/members/req`, { method:'POST', headers:{'Content-Type':'application/json'}, body:JSON.stringify(data) }).then(r=>r.json());
-        hideL(); alert("کد شناسایی شما: " + res.id); closeAllM();
+        hideL(); showMsg("کد شناسایی شما: " + res.id); closeAllM();
     }
 
     async function doGetCard() {
         const id = document.getElementById('sci').value;
         showL();
         const res = await fetch(`${API}/members/card/${id}`).then(r=>r.json());
-        hideL(); if(res.link) window.open(res.link); else alert("یافت نشد");
+        hideL(); if(res.link) window.open(res.link); else showMsg("یافت نشد");
     }
 
     async function doUpgrade() {
         const id = document.getElementById('sui').value;
         showL();
         await fetch(`${API}/members/upgrade/${id}`, { method:'PATCH' });
-        hideL(); alert("درخواست ارتقا ثبت شد"); closeAllM();
+        hideL(); showMsg("درخواست ارتقا ثبت شد"); closeAllM();
     }
 
     async function doGetPoints() {
@@ -323,7 +323,7 @@ async function doCert() {
         const res = await fetch(`${API}/members/points/${id}`).then(r=>r.json());
         hideL();
         if(res.name) document.getElementById('pRes').innerHTML = `<div class="res-card"><b>${res.name}</b><br>امتیاز: ${res.points}</div>`;
-        else alert("یافت نشد");
+        else showMsg("یافت نشد");
     }
 
     // همکاری
@@ -351,7 +351,7 @@ async function doCert() {
 
         showL();
         const res = await fetch(`${API}/submit/${t}`, { method:'POST', headers:{'Content-Type':'application/json'}, body:JSON.stringify(d) }).then(r=>r.json());
-        hideL(); alert("کد پیگیری: " + res.id); closeAllM();
+        hideL(); showMsg("کد پیگیری: " + res.id); closeAllM();
     }
     function showMsg(text) {
     document.getElementById('msgText').innerHTML = text;
