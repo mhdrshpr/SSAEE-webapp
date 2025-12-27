@@ -59,14 +59,12 @@ def get_card(sid: str):
 
 @app.patch("/api/members/upgrade/{id}")
 def member_upgrade(id: str):
-    response = requests.get(f"{SHEET_URL}/tabs/Members/search?StudentID={id}")
-    res_list = response.json()
+    search_res = requests.get(f"{SHEET_URL}/tabs/Members/search?StudentID={id}").json()
     
-    if not isinstance(res_list, list) or len(res_list) == 0:
+    if not search_res or len(search_res) == 0:
         return {"status": "error", "code": "NOT_FOUND"}, 404
     
-    user_data = res_list[0]
-    
+    user_data = search_res[0]
     if str(user_data.get("UpgradeReq")).upper() == "TRUE":
         return {"status": "error", "code": "ALREADY_EXISTS"}, 200
 
