@@ -39,6 +39,70 @@
         .expired { background: #222; border: 1px solid #666; }
         .invalid { background: #5d0000; border: 1px solid #ff1744; }
         .row { display: flex; justify-content: space-between; font-size: 11px; margin-bottom: 8px; border-bottom: 1px solid #111; padding-bottom: 4px; }
+        /* Container اصلی فوتر */
+.social-footer {
+    position: fixed;
+    bottom: 15px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: calc(100% - 40px);
+    max-width: 410px;
+    z-index: 1000;
+}
+
+.social-container {
+    background: #151517; 
+    border: 1px solid #28282b;
+    border-radius: 20px; 
+    padding: 12px 20px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+}
+
+.social-text {
+    color: #ffffff;
+    font-size: 13px;
+    font-weight: bold;
+    white-space: nowrap;
+}
+
+.social-icons {
+    display: flex;
+    gap: 12px;
+}
+
+.s-icon {
+    width: 34px;
+    height: 34px;
+    border-radius: 10px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    text-decoration: none;
+    font-size: 18px;
+    transition: 0.3s;
+    background: transparent;
+}
+
+.tg { color: #229ED9; border: 1.5px solid #229ED9; } 
+.ig { color: #E1306C; border: 1.5px solid #E1306C; } 
+.in { color: #0077B5; border: 1.5px solid #0077B5; } 
+
+.s-icon:hover {
+    transform: scale(1.1);
+    background: rgba(255,255,255,0.05);
+}
+
+.dev-credit {
+    text-align: center;
+    font-size: 9px;
+    color: #444;
+    margin-top: 10px;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+}
     </style>
 </head>
 <body>
@@ -122,6 +186,17 @@
 <div id="colM" class="modal" onclick="closeAllM()">
     <div class="m-content" id="colB" onclick="event.stopPropagation()"></div>
 </div>
+    <footer class="social-footer">
+    <div class="social-container">
+        <div class="social-icons">
+            <a href="https://t.me/srbiausaee" class="s-icon tg"><i class="fa-brands fa-telegram"></i></a>
+            <a href="https://instagram.com/srbiaussaee" class="s-icon ig"><i class="fa-brands fa-instagram"></i></a>
+            <a href="https://linkedin.com/company/srbiausaee" class="s-icon in"><i class="fa-brands fa-linkedin-in"></i></a>
+        </div>
+        <div class="social-text">شبکه‌های اجتماعی انجمن علمی برق علوم و تحقیقات:</div>
+    </div>
+    <div class="dev-credit">Developed by <b>SSAEE Tech Team</b></div>
+</footer>
 
 <script>
     const API = "https://ssaee.onrender.com/api";
