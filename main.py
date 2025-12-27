@@ -59,12 +59,24 @@ def get_card(sid: str):
 
 @app.patch("/api/members/upgrade/{id}")
 def member_upgrade(id: str):
-    user_data = requests.get(f"{SHEET_URL}/tabs/Members/StudentID/{id}").json()
+قبلاً تعریف شده‌اند
+    response = requests.get(f"{SHEET_URL}/tabs/Members/StudentID/{id}")
+    user_data = response.json()
     
-    if not user_data or "error" in user_data:
-        return {"status": "error", "message": "not_found"}, 404
-    return {"status": "success"}
-    
+if not user_data or "error" in user_data:
+        return {"status": "error", "code": "NOT_FOUND"}, 404
+    if str(user_data.get("UpgradeReq")).upper() == "TRUE":
+        return {"status": "error", "code": "ALREADY_EXISTS"}, 200
+    update_res = requests.patch(
+        f"{SHEET_URL}/tabs/Members/StudentID/{id}", 
+        json={"UpgradeReq": "TRUE"}
+    )
+
+    if update_res.status_code == 200:
+        return {"status": "success"}
+    else:
+        return {"status": "error", "code": "UPDATE_FAILED"}, 500
+        
 @app.get("/api/members/points/{sid}")
 def get_points(sid: str):
     res = requests.get(f"{SHEET_URL}/tabs/Members/search?StudentID={sid}").json()
