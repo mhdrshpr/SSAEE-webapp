@@ -358,28 +358,37 @@ body {
 
 async function doUpgrade() {
     const id = document.getElementById('sui').value;
-    if(!id) return;
+    if(!id) {
+        showMsg("لطفاً شماره دانشجویی را وارد کنید.");
+        return;
+    }
+    
     showL();
     try {
-        const response = await fetch(`${API}/members/upgrade/${id}`, { method:'PATCH' });
+        const response = await fetch(`${API}/members/upgrade/${id}`, { 
+            method: 'PATCH',
+            headers: { 'Content-Type': 'application/json' }
+        });
+        
         const res = await response.json();
-
         hideL();
+
         if (response.ok && res.status === 'success') {
             showMsg("درخواست تمدید/ارتقا با موفقیت ثبت شد.");
         } 
         else if (res.code === 'ALREADY_EXISTS') {
-            showMsg("درخواست شما قبلاً ثبت شده است و در دست بررسی می‌باشد.");
+            showMsg("درخواست ارتقا برای این شماره دانشجویی قبلاً ثبت شده و در حال بررسی است.");
         } 
-        else if (res.code === 'NOT_FOUND') {
-            showMsg("شماره دانشجویی شما در لیست اعضا یافت نشد.");
+        else if (response.status === 404 || res.code === 'NOT_FOUND') {
+            showMsg("شماره دانشجویی شما در لیست اعضا یافت نشد. لطفاً ابتدا از بخش ثبت‌نام اقدام کنید.");
         } 
         else {
-            showMsg("خطایی در پردازش درخواست رخ داد.");
+            showMsg("متأسفانه خطایی در پردازش درخواست رخ داد. لطفاً دوباره تلاش کنید.");
         }
     } catch(e) { 
         hideL(); 
-        showMsg("خطا در برقراری ارتباط با سرور"); 
+        showMsg("خطا در برقراری ارتباط با سرور."); 
+        console.error(e);
     }
 }
 
