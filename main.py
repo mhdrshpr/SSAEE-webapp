@@ -59,24 +59,31 @@ def get_card(sid: str):
 
 @app.patch("/api/members/upgrade/{id}")
 def member_upgrade(id: str):
-    search_res = requests.get(f"{SHEET_URL}/tabs/Members/search?StudentID={id}").json()
-    
-    if not search_res or len(search_res) == 0:
-        return {"status": "error", "code": "NOT_FOUND"}, 404
-    
-    user_data = search_res[0]
-    if str(user_data.get("UpgradeReq")).upper() == "TRUE":
-        return {"status": "error", "code": "ALREADY_EXISTS"}, 200
+    try:
+        search_url = f"{SHEET_URL}/tabs/Members/search?StudentID={id}"
+        response = requests.get(search_url)
+        res_data = response.json()
 
-    update_res = requests.patch(
-        f"{SHEET_URL}/tabs/Members/StudentID/{id}", 
-        json={"UpgradeReq": "TRUE"}
-    )
+        if not res_data or (isinstance(res_data, list) and len(res_data) == 0):
+            return {"status": "error", "code": "NOT_FOUND"}, 404
 
-    if update_res.status_code in [200, 201]:
-        return {"status": "success"}
-    else:
-        return {"status": "error", "code": "UPDATE_FAILED"}, 500
+        user_data = res_data[0] if isinstance(res_data, list) else res_data
+
+        upgrade_val = str(user_data.get("UpgradeReq", "")).upper()
+        if upgrade_val == "TRUE":
+            return {"status": "error", "code": "ALREADY_EXISTS"}, 200
+
+        update_url = f"{SHEET_URL}/tabs/Members/StudentID/{id}"
+        update_res = requests.patch(update_url, json={"UpgradeReq": "TRUE"})
+
+        if update_res.status_code in [200, 201]:
+            return {"status": "success"}
+        else:
+            return {"status": "error", "code": "UPDATE_FAILED"}, 500
+
+    except Exception as e:
+        print(f"Error: {str(e)}")
+        return {"status": "error", "code": "SERVER_EXCEPTION", "details": str(e)}, 500
         
 @app.get("/api/members/points/{sid}")
 def get_points(sid: str):
