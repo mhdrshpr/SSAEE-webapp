@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>پنل هوشمند انجمن</title>
+    <title>پنل هوشمند انجمن علمی برق</title>
     <link href="https://fonts.googleapis.com/css2?family=Vazirmatn:wght@400;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
     <script src="https://telegram.org/js/telegram-web-app.js"></script>
@@ -12,155 +12,116 @@
         body { background: var(--bg); color: var(--text); font-family: 'Vazirmatn', sans-serif; margin: 0; padding: 0; display: flex; justify-content: center; }
         .app-container { width: 100%; max-width: 450px; padding: 20px; box-sizing: border-box; min-height: 100vh; padding-bottom: 120px; }
         
-        /* Header */
+        /* هدر */
         .header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 30px; }
         .nav-btns { display: flex; gap: 10px; }
-        .btn-top { background: #1a1a1a; border: 1px solid #333; color: #fff; padding: 10px 15px; border-radius: 12px; cursor: pointer; font-family: 'Vazirmatn'; font-size: 13px; display: flex; align-items: center; gap: 8px; transition: 0.3s; }
-        .btn-top:hover { border-color: var(--accent); }
-        .logo { width: 55px; filter: drop-shadow(0 0 5px rgba(255,204,0,0.3)); }
+        .btn-top { background: #1a1a1a; border: 1px solid #333; color: #fff; padding: 8px 12px; border-radius: 12px; cursor: pointer; font-family: 'Vazirmatn'; font-size: 12px; display: flex; align-items: center; gap: 6px; }
+        .logo { width: 50px; }
 
-        /* Cards */
-        .card { background: var(--card); border: 1px solid #222; border-radius: 24px; padding: 18px; margin-bottom: 20px; transition: 0.3s; }
-        .card:active { transform: scale(0.98); }
-        .card-title { font-size: 12px; color: var(--gray); margin-bottom: 15px; font-weight: 700; text-transform: uppercase; letter-spacing: 1px; display: flex; align-items: center; gap: 8px; }
-        .card-title i { color: var(--accent); font-size: 14px; }
-        
-        .btn-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
-        .btn-main { background: #1d1d1d; color: #fff; border: 1px solid #282828; padding: 14px; border-radius: 18px; cursor: pointer; font-family: 'Vazirmatn'; font-size: 11.5px; display: flex; flex-direction: column; align-items: center; gap: 10px; transition: 0.3s; }
-        .btn-main i { font-size: 18px; color: var(--accent); }
-        .btn-main:hover { background: #252525; border-color: var(--accent); }
-        .full-width { grid-column: span 2; flex-direction: row; justify-content: center; }
-
-        /* Modal & Forms */
-        .modal { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.95); display: none; justify-content: center; align-items: center; z-index: 2000; backdrop-filter: blur(10px); }
-        .modal-content { background: #111; width: 90%; max-width: 350px; padding: 30px; border-radius: 30px; border: 1px solid #333; position: relative; animation: slideUp 0.3s ease-out; }
-        @keyframes slideUp { from { transform: translateY(50px); opacity: 0; } to { transform: translateY(0); opacity: 1; } }
-        
-        .close-modal { position: absolute; top: 20px; left: 20px; color: var(--gray); font-size: 22px; cursor: pointer; }
-        h3 { margin-top: 0; font-size: 18px; text-align: center; color: var(--accent); }
-        
-        input, textarea { width: 100%; background: #000; border: 1px solid #333; color: #fff; padding: 14px; margin: 10px 0; border-radius: 15px; font-family: 'Vazirmatn'; text-align: center; box-sizing: border-box; font-size: 14px; outline: none; transition: 0.3s; }
-        input:focus { border-color: var(--accent); }
-        
-        .btn-submit { background: var(--accent); color: #000; border: none; width: 100%; padding: 15px; border-radius: 15px; font-family: 'Vazirmatn'; font-weight: bold; cursor: pointer; margin-top: 10px; }
-
-        /* Footer */
-        .footer { position: fixed; bottom: 20px; width: calc(100% - 40px); max-width: 410px; background: #111; border: 1px solid #222; border-radius: 22px; padding: 15px; display: flex; justify-content: space-between; align-items: center; box-shadow: 0 -10px 20px rgba(0,0,0,0.5); }
-        .social-links { display: flex; gap: 10px; }
-        .social-btn { width: 35px; height: 35px; border-radius: 10px; display: flex; align-items: center; justify-content: center; text-decoration: none; border: 1px solid; transition: 0.3s; }
-        .tg-c { color: #0088cc; border-color: #0088cc33; }
-        .ig-c { color: #e4405f; border-color: #e4405f33; }
-        .social-btn:hover { background: #fff1; }
-        .dev-tag { font-size: 10px; color: #555; text-align: center; margin-top: 10px; position: fixed; bottom: 5px; width: 100%; max-width: 450px; }
-        
-        #toast { position: fixed; top: 20px; background: var(--accent); color: #000; padding: 10px 20px; border-radius: 12px; font-weight: bold; display: none; z-index: 3000; font-size: 13px; }
-    /* Loading Overlay */
-        #loader {
-            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
-            background: rgba(0,0,0,0.8); display: none;
-            flex-direction: column; justify-content: center; align-items: center;
-            z-index: 9999; backdrop-filter: blur(5px);
-        }
-        .spinner {
-        width: 50px; height: 50px;
-        border: 5px solid #333; border-top: 5px solid var(--accent);
-        border-radius: 50%;
-        animation: spin 3s linear infinite;
-        }
+        /* لودینگ */
+        #loader { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.85); display: none; flex-direction: column; justify-content: center; align-items: center; z-index: 9999; backdrop-filter: blur(5px); }
+        .spinner { width: 45px; height: 45px; border: 4px solid #222; border-top: 4px solid var(--accent); border-radius: 50%; animation: spin 1s linear infinite; }
         @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
-    .loading-text { color: var(--accent); margin-top: 15px; font-size: 14px; font-weight: bold; }
+
+        /* کارت‌ها */
+        .card { background: var(--card); border: 1px solid #222; border-radius: 22px; padding: 18px; margin-bottom: 20px; }
+        .card-title { font-size: 12px; color: var(--gray); margin-bottom: 15px; font-weight: 700; display: flex; align-items: center; gap: 8px; }
+        .card-title i { color: var(--accent); }
+        .btn-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+        .btn-main { background: #1a1a1a; color: #fff; border: 1px solid #282828; padding: 12px; border-radius: 18px; cursor: pointer; font-family: 'Vazirmatn'; font-size: 11px; display: flex; flex-direction: column; align-items: center; gap: 8px; }
+        .btn-main i { font-size: 16px; color: var(--accent); }
+
+        /* استایل کارت نتیجه استعلام (مطابق تصویر) */
+        .res-container { margin-top: 25px; display: none; animation: fadeIn 0.4s ease; }
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+        .res-card { background: #080808; border: 1px solid #333; border-radius: 20px; padding: 25px 15px 15px; position: relative; margin-top: 20px; }
+        .status-badge { position: absolute; top: -15px; left: 50%; transform: translateX(-50%); padding: 6px 20px; border-radius: 50px; font-weight: bold; font-size: 13px; color: #fff; display: flex; align-items: center; gap: 8px; white-space: nowrap; }
+        .status-valid { background: #004d26; border: 1px solid #00c853; }
+        .status-expired { background: #222; border: 1px solid #666; }
+        .status-invalid { background: #5d0000; border: 1px solid #ff1744; }
+        .res-row { display: flex; justify-content: space-between; margin: 12px 0; font-size: 12px; border-bottom: 1px solid #1a1a1a; padding-bottom: 6px; }
+        .res-label { color: #fff; font-weight: bold; }
+        .res-value { color: #aaa; direction: ltr; }
+
+        /* پنجره‌ها (Modals) */
+        .modal { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.9); display: none; justify-content: center; align-items: center; z-index: 2000; }
+        .modal-content { background: #111; width: 85%; max-width: 350px; padding: 25px; border-radius: 25px; border: 1px solid #222; position: relative; }
+        .close-btn { position: absolute; top: 15px; left: 15px; color: #555; font-size: 22px; cursor: pointer; }
+        input, textarea { width: 100%; background: #000; border: 1px solid #333; color: #fff; padding: 12px; margin: 8px 0; border-radius: 12px; font-family: 'Vazirmatn'; text-align: center; box-sizing: border-box; }
+        .btn-submit { background: var(--accent); color: #000; border: none; width: 100%; padding: 14px; border-radius: 12px; font-family: 'Vazirmatn'; font-weight: bold; margin-top: 10px; cursor: pointer; }
+
+        /* فوتر */
+        .footer { position: fixed; bottom: 20px; width: calc(100% - 40px); max-width: 410px; background: #111; border: 1px solid #222; border-radius: 20px; padding: 12px; display: flex; justify-content: space-between; align-items: center; }
+        .dev-tag { position: fixed; bottom: 5px; width: 100%; text-align: center; font-size: 9px; color: #444; }
+        #toast { position: fixed; top: 20px; background: var(--accent); color: #000; padding: 8px 15px; border-radius: 10px; font-weight: bold; display: none; z-index: 3000; font-size: 12px; }
     </style>
 </head>
 <body>
 
-<div id="toast">این بخش بزودی فعال می‌شود</div>
+<div id="loader"><div class="spinner"></div><div style="color:var(--accent); margin-top:15px; font-size:12px;">در حال پردازش...</div></div>
+<div id="toast">بزودی فعال می‌شود</div>
 
 <div class="app-container">
     <header class="header">
         <div class="nav-btns">
-            <button class="btn-top" onclick="closeApp()">
-                <i class="fa-solid fa-arrow-right-from-bracket"></i> بازگشت
-            </button>
-            <button class="btn-top" onclick="window.location.href='https://t.me/saee_admin'">
-                <i class="fa-solid fa-headset"></i> پشتیبانی
-            </button>
+            <button class="btn-top" onclick="tg.close()"><i class="fa-solid fa-xmark"></i> بستن</button>
+            <button class="btn-top" onclick="window.location.href='https://t.me/saee_admin'"><i class="fa-solid fa-headset"></i> پشتیبانی</button>
         </div>
-        <img src="logo.png" alt="SSAEE Logo" class="logo">
+        <img src="logo.png" class="logo">
     </header>
 
     <div class="card">
-        <div class="card-title"><i class="fa-solid fa-certificate"></i> گواهی‌نامه‌ها</div>
+        <div class="card-title"><i class="fa-solid fa-certificate"></i> استعلام و مدارک</div>
         <div class="btn-grid">
-            <button class="btn-main" onclick="openM('certM')">
-                <i class="fa-solid fa-magnifying-glass"></i> استعلام اصالت
-            </button>
-            <button class="btn-main" onclick="showSoon()">
-                <i class="fa-solid fa-file-arrow-down"></i> دریافت فایل
-            </button>
-            <button class="btn-main full-width" onclick="window.location.href='https://t.me/saee_admin'">
-                <i class="fa-solid fa-spinner"></i> پیگیری صدور مدرک
-            </button>
+            <button class="btn-main" onclick="openM('certM')"><i class="fa-solid fa-magnifying-glass"></i> استعلام اصالت</button>
+            <button class="btn-main" onclick="showSoon()"><i class="fa-solid fa-download"></i> دانلود مدرک</button>
         </div>
     </div>
 
     <div class="card">
-        <div class="card-title"><i class="fa-solid fa-users-gear"></i>  اعضا</div>
+        <div class="card-title"><i class="fa-solid fa-user-shield"></i> پنل اعضا</div>
         <div class="btn-grid">
-            <button class="btn-main" onclick="openM('mReqM')">
-                <i class="fa-solid fa-user-plus"></i> عضویت جدید
-            </button>
-            <button class="btn-main" onclick="showSoon()">
-                <i class="fa-solid fa-id-badge"></i> کارت عضویت
-            </button>
-            <button class="btn-main" onclick="showSoon()">
-                <i class="fa-solid fa-angles-up"></i> ارتقا/تمدید
-            </button>
-            <button class="btn-main" onclick="showSoon()">
-                <i class="fa-solid fa-chart-line"></i> مشاهده امتیاز
-            </button>
+            <button class="btn-main" onclick="openM('mReqM')"><i class="fa-solid fa-user-plus"></i> عضویت جدید</button>
+            <button class="btn-main" onclick="showSoon()"><i class="fa-solid fa-id-card"></i> کارت عضویت</button>
         </div>
     </div>
 
     <div class="card">
-        <div class="card-title"><i class="fa-solid fa-handshake"></i> همکاری و تعامل</div>
+        <div class="card-title"><i class="fa-solid fa-handshake"></i> تعامل و پیشنهاد</div>
         <div class="btn-grid">
-            <button class="btn-main" onclick="showSoon()"><i class="fa-solid fa-building-columns"></i> انجمن‌ها</button>
-            <button class="btn-main" onclick="showSoon()"><i class="fa-solid fa-graduation-cap"></i> اساتید</button>
-            <button class="btn-main" onclick="showSoon()"><i class="fa-solid fa-briefcase"></i> شرکت‌ها</button>
             <button class="btn-main" onclick="openCollab('suggestions')"><i class="fa-solid fa-comment-dots"></i> پیشنهادات</button>
+            <button class="btn-main" onclick="showSoon()"><i class="fa-solid fa-briefcase"></i> فرصت همکاری</button>
         </div>
     </div>
 </div>
 
 <footer class="footer">
-    <div class="social-links">
-        <a href="https://t.me/srbiausaee" class="social-btn tg-c"><i class="fa-brands fa-telegram"></i></a>
-        <a href="https://instagram.com/srbiaussaee" class="social-btn ig-c"><i class="fa-brands fa-instagram"></i></a>
-        <a href="https://linkedin.com/company/srbiausaee" class="social-btn ig-c"><i class="fa-brands fa-linkedin"></i></a>
-
+    <div style="display:flex; gap:10px;">
+        <a href="https://t.me/saee_iust" style="color:#0088cc;"><i class="fa-brands fa-telegram fa-xl"></i></a>
+        <a href="#" style="color:#e4405f;"><i class="fa-brands fa-instagram fa-xl"></i></a>
     </div>
-    <div style="font-size: 11px; font-weight: bold;">شبکه‌های اجتماعی انجمن</div>
+    <div style="font-size:11px; font-weight:bold;">انجمن علمی برق علم و صنعت</div>
 </footer>
-<div class="dev-tag">Developed by SAEE Tech Team - 2026</div>
+<div class="dev-tag">Developed by SAEE Tech Team</div>
 
 <div id="certM" class="modal" onclick="closeAllM()">
     <div class="modal-content" onclick="event.stopPropagation()">
-        <i class="fa-solid fa-xmark close-modal" onclick="closeAllM()"></i>
-        <h3>استعلام گواهی</h3>
-        <input type="text" id="certId" placeholder="شماره سریال گواهی">
-        <button class="btn-submit" onclick="apiCheckCert()">بررسی اصالت</button>
-        <div id="certRes" style="margin-top:20px; font-size:12px; display:none;"></div>
+        <i class="fa-solid fa-xmark close-btn" onclick="closeAllM()"></i>
+        <h3 style="text-align:center; font-size:16px; color:var(--accent);">استعلام گواهینامه</h3>
+        <input type="text" id="certId" placeholder="شماره سریال را وارد کنید">
+        <button class="btn-submit" onclick="apiCheckCert()">شروع استعلام</button>
+        <div id="certRes" class="res-container"></div>
     </div>
 </div>
 
 <div id="mReqM" class="modal" onclick="closeAllM()">
     <div class="modal-content" onclick="event.stopPropagation()">
-        <i class="fa-solid fa-xmark close-modal" onclick="closeAllM()"></i>
-        <h3>فرم عضویت</h3>
+        <i class="fa-solid fa-xmark close-btn" onclick="closeAllM()"></i>
+        <h3 style="text-align:center; font-size:16px; color:var(--accent);">درخواست عضویت</h3>
         <input type="text" id="mName" placeholder="نام و نام خانوادگی">
         <input type="text" id="mNID" placeholder="کد ملی">
         <input type="text" id="mSID" placeholder="شماره دانشجویی">
-        <button class="btn-submit" onclick="apiMemberReq()">ثبت درخواست</button>
+        <button class="btn-submit" onclick="apiMemberReq()">ثبت اطلاعات</button>
     </div>
 </div>
 
@@ -173,7 +134,8 @@
     const tg = window.Telegram.WebApp;
     tg.expand();
 
-    function closeApp() { tg.close(); }
+    function showLoading() { document.getElementById('loader').style.display = 'flex'; }
+    function hideLoading() { document.getElementById('loader').style.display = 'none'; }
     function openM(id) { document.getElementById(id).style.display = 'flex'; }
     function closeAllM() { document.querySelectorAll('.modal').forEach(m => m.style.display='none'); }
     
@@ -183,53 +145,77 @@
         setTimeout(() => t.style.display = 'none', 3000);
     }
 
-    // API Calls
     async function apiCheckCert() {
         const id = document.getElementById('certId').value;
-        const res = await fetch(`${API_URL}/cert/${id}`).then(r => r.json());
-        const div = document.getElementById('certRes');
-        div.style.display = 'block';
-        if(res.status === 'success') {
-            div.innerHTML = `<p>✅ تایید شد: ${res.data.NameFa}</p><p>دوره: ${res.data.Course}</p>`;
-        } else {
-            div.innerHTML = `<p style="color:#ff4444;">❌ گواهی یافت نشد یا معتبر نیست.</p>`;
-        }
+        if(!id) return;
+        
+        showLoading(); // نمایش لودینگ
+        const resDiv = document.getElementById('certRes');
+        resDiv.style.display = 'none';
+
+        try {
+            const response = await fetch(`${API_URL}/cert/${id}`);
+            const res = await response.json();
+            let html = '';
+
+            if(res.status === 'success') {
+                const d = res.data;
+                const isExp = res.cert_status === 'expired';
+                const bClass = isExp ? 'status-expired' : 'status-valid';
+                const bText = isExp ? 'منقضی شده <i class="fa-solid fa-clock"></i>' : 'معتبر <i class="fa-solid fa-circle-check"></i>';
+                
+                html = `
+                    <div class="res-card">
+                        <div class="status-badge ${bClass}">${bText}</div>
+                        <div class="res-row"><span class="res-label">شماره گواهینامه:</span><span class="res-value">${d.ID}</span></div>
+                        <div class="res-row"><span class="res-label">نام فارسی:</span><span class="res-value">${d.NameFa}</span></div>
+                        <div class="res-row"><span class="res-label">نام انگلیسی:</span><span class="res-value">${d.NameEn || '---'}</span></div>
+                        <div class="res-row"><span class="res-label">دوره:</span><span class="res-value">${d.Course}</span></div>
+                        <div class="res-row"><span class="res-label">تاریخ صدور:</span><span class="res-value">${d.IssueDate}</span></div>
+                        <div class="res-row"><span class="res-label">تاریخ انقضا:</span><span class="res-value">${d.ExpDate || '---'}</span></div>
+                    </div>`;
+            } else {
+                html = `
+                    <div class="res-card">
+                        <div class="status-badge status-invalid">نامعتبر <i class="fa-solid fa-circle-xmark"></i></div>
+                        <p style="text-align:center; color:#666; font-size:11px; margin-top:10px;">شناسه وارد شده در سیستم یافت نشد.</p>
+                    </div>`;
+            }
+            resDiv.innerHTML = html;
+            resDiv.style.display = 'block';
+        } catch { alert("خطا در ارتباط با سرور"); }
+        finally { hideLoading(); } // پنهان کردن لودینگ
     }
 
     async function apiMemberReq() {
-        const data = {
-            Name: document.getElementById('mName').value,
-            NationalID: document.getElementById('mNID').value,
-            StudentID: document.getElementById('mSID').value
-        };
-        const res = await fetch(`${API_URL}/members/req`, {
-            method: 'POST', headers: {'Content-Type': 'application/json'},
-            body: JSON.stringify(data)
-        }).then(r => r.json());
-        alert("کد پیگیری شما: " + res.id);
-        closeAllM();
+        const data = { Name: document.getElementById('mName').value, NationalID: document.getElementById('mNID').value, StudentID: document.getElementById('mSID').value };
+        if(!data.Name || !data.StudentID) return;
+        showLoading();
+        try {
+            const res = await fetch(`${API_URL}/members/req`, { method:'POST', headers:{'Content-Type':'application/json'}, body:JSON.stringify(data) }).then(r=>r.json());
+            alert("ثبت شد. کد پیگیری: " + res.id);
+            closeAllM();
+        } catch { alert("خطا در ثبت"); }
+        finally { hideLoading(); }
     }
 
     function openCollab(type) {
-        let html = `<i class="fa-solid fa-xmark close-modal" onclick="closeAllM()"></i><h3>ارسال پیشنهادات</h3>`;
-        html += `<input id="cCall" placeholder="شماره تماس"><input id="cSub" placeholder="موضوع"><textarea id="cNote" placeholder="متن پیام" rows="4"></textarea>`;
-        html += `<button class="btn-submit" onclick="apiSubmit('${type}')">ارسال نهایی</button>`;
+        let html = `<i class="fa-solid fa-xmark close-btn" onclick="closeAllM()"></i><h3 style="text-align:center; color:var(--accent);">ارسال پیشنهاد</h3>`;
+        html += `<input id="cCall" placeholder="شماره تماس"><input id="cSub" placeholder="موضوع"><textarea id="cNote" placeholder="متن شما" rows="4"></textarea>`;
+        html += `<button class="btn-submit" onclick="apiSubmit('${type}')">ارسال پیام</button>`;
         document.getElementById('collabBody').innerHTML = html;
         openM('collabM');
     }
 
     async function apiSubmit(type) {
-        const data = { 
-            Call: document.getElementById('cCall').value,
-            Subject: document.getElementById('cSub').value,
-            Note: document.getElementById('cNote').value
-        };
-        const res = await fetch(`${API_URL}/submit/${type}`, {
-            method: 'POST', headers: {'Content-Type': 'application/json'},
-            body: JSON.stringify(data)
-        }).then(r => r.json());
-        alert("ثبت شد. کد پیگیری: " + res.id);
-        closeAllM();
+        const data = { Call: document.getElementById('cCall').value, Subject: document.getElementById('cSub').value, Note: document.getElementById('cNote').value };
+        showLoading();
+        try {
+            const res = await fetch(`${API_URL}/submit/${type}`, { method:'POST', headers:{'Content-Type':'application/json'}, body:JSON.stringify(data) }).then(r=>r.json());
+            alert("دریافت شد. کد: " + res.id);
+            closeAllM();
+        } catch { alert("خطا در ارسال"); }
+        finally { hideLoading(); }
     }
 </script>
 </body>
