@@ -338,7 +338,6 @@ body {
         try {
             const res = await fetch(`${API}/members/req`, { method:'POST', headers:{'Content-Type':'application/json'}, body:JSON.stringify(data) }).then(r=>r.json());
             hideL(); 
-            // ترتیب مهم: اول پیام را می‌سازیم، تابع showMsg خودش بقیه را می‌بندد
             showMsg(`ثبت نام انجام شد.<br>کد شناسایی شما: <b>${res.id}</b>`);
         } catch(e) {
             hideL();
@@ -363,13 +362,20 @@ async function doUpgrade() {
     showL();
     try {
         const response = await fetch(`${API}/members/upgrade/${id}`, { method:'PATCH' });
-        const res = await response.json(); 
+        const res = await response.json();
 
         hideL();
-        if(response.ok && res.status === 'success') {
+        if (response.ok && res.status === 'success') {
             showMsg("درخواست تمدید/ارتقا با موفقیت ثبت شد.");
-        } else {
-            showMsg("شماره دانشجویی شما در لیست اعضا یافت نشد. ابتدا باید عضو انجمن شوید.");
+        } 
+        else if (res.code === 'ALREADY_EXISTS') {
+            showMsg("درخواست شما قبلاً ثبت شده است و در دست بررسی می‌باشد.");
+        } 
+        else if (res.code === 'NOT_FOUND') {
+            showMsg("شماره دانشجویی شما در لیست اعضا یافت نشد.");
+        } 
+        else {
+            showMsg("خطایی در پردازش درخواست رخ داد.");
         }
     } catch(e) { 
         hideL(); 
