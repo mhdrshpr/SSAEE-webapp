@@ -59,7 +59,6 @@ def get_card(sid: str):
 
 @app.patch("/api/members/upgrade/{id}")
 def member_upgrade(id: str):
-قبلاً تعریف شده‌اند
     response = requests.get(f"{SHEET_URL}/tabs/Members/StudentID/{id}")
     user_data = response.json()
     
