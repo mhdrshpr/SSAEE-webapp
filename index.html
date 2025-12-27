@@ -230,36 +230,54 @@ body {
     function closeAllM() { document.querySelectorAll('.modal').forEach(m=>m.style.display='none'); }
 
     // گواهی
-    async function doCert() {
-        const id = document.getElementById('cInp').value;
-        showL();
-        try {
-            const res = await fetch(`${API}/cert/${id}`).then(r=>r.json());
-            let html = '';
-            
-if(res.status === 'success') {
-    const d = res.data;
-    let cStatus = res.cert_status;
+async function doCert() {
+    const id = document.getElementById('cInp').value;
+    if(!id) return;
+    showL();
+    try {
+        const res = await fetch(`${API}/cert/${id}`).then(r=>r.json());
+        let html = '';
+        
+        if(res.status === 'success') {
+            const d = res.data;
+            let cStatus = res.cert_status;
 
-    if (d.ExpDate) {
-        const parts = d.ExpDate.split('/');
-        const isoDate = `${parts[2]}-${parts[0]}-${parts[1]}`;
-        const expDate = new Date(isoDate);
-        expDate.setHours(23, 59, 59);
-        if (expDate < new Date()) {
-            cStatus = 'expired';
-        }
-    }
-        const bClass = cStatus === 'valid' ? 'valid' : 'expired';
-    const bText = cStatus === 'valid' ? 'معتبر' : 'منقضی شده';
-    
-} 
-    else {
-                html = `<div class="res-card"><div class="badge invalid">نامعتبر</div><p style="text-align:center;font-size:11px;">یافت نشد</p></div>`;
+            if (d.ExpDate) {
+                const parts = d.ExpDate.split('/');
+                const isoDate = `${parts[2]}-${parts[0]}-${parts[1]}`;
+                const expDate = new Date(isoDate);
+                expDate.setHours(23, 59, 59);
+                if (expDate < new Date()) {
+                    cStatus = 'expired';
+                }
             }
-            document.getElementById('cRes').innerHTML = html;
-        } finally { hideL(); }
+
+            const bClass = cStatus === 'valid' ? 'valid' : 'expired';
+            const bText = cStatus === 'valid' ? 'معتبر <i class="fa-solid fa-check"></i>' : 'منقضی شده <i class="fa-solid fa-clock"></i>';
+
+            // اضافه کردن بخش تولید HTML که در کد شما جا افتاده بود:
+            html = `
+                <div class="res-card">
+                    <div class="badge ${bClass}">${bText}</div>
+                    <div class="row"><span>شماره:</span><span>${d.ID}</span></div>
+                    <div class="row"><span>نام:</span><span>${d.NameFa}</span></div>
+                    <div class="row"><span>دوره:</span><span>${d.Course}</span></div>
+                    <div class="row"><span>تاریخ صدور:</span><span>${d.IssueDate}</span></div>
+                    <div class="row"><span>تاریخ انقضا:</span><span>${d.ExpDate || '---'}</span></div>
+                </div>`;
+        } 
+        else {
+            html = `<div class="res-card"><div class="badge invalid">نامعتبر <i class="fa-solid fa-xmark"></i></div><p style="text-align:center;font-size:11px;margin-top:10px;">یافت نشد</p></div>`;
+        }
+        
+        document.getElementById('cRes').innerHTML = html;
+    } catch (error) {
+        console.error("Fetch Error:", error);
+        alert("خطا در برقراری ارتباط با سرور");
+    } finally { 
+        hideL(); 
     }
+}
 
     async function doDownload() {
         const id = document.getElementById('dInp').value;
