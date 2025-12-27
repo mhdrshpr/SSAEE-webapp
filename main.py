@@ -62,10 +62,12 @@ def member_upgrade(id: str):
     response = requests.get(f"{SHEET_URL}/tabs/Members/StudentID/{id}")
     user_data = response.json()
     
-if not user_data or "error" in user_data:
+    if not user_data or "error" in user_data:
         return {"status": "error", "code": "NOT_FOUND"}, 404
+    
     if str(user_data.get("UpgradeReq")).upper() == "TRUE":
         return {"status": "error", "code": "ALREADY_EXISTS"}, 200
+
     update_res = requests.patch(
         f"{SHEET_URL}/tabs/Members/StudentID/{id}", 
         json={"UpgradeReq": "TRUE"}
