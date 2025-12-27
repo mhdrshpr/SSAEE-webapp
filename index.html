@@ -210,6 +210,13 @@ body {
 <div id="colM" class="modal" onclick="closeAllM()">
     <div class="m-content" id="colB" onclick="event.stopPropagation()"></div>
 </div>
+    <div id="msgM" class="modal" onclick="closeAllM()">
+    <div class="m-content" onclick="event.stopPropagation()" style="text-align: center;">
+        <i class="fa-solid fa-circle-check" style="font-size: 50px; color: var(--accent); margin-bottom: 15px;"></i>
+        <div id="msgText" style="font-size: 14px; line-height: 1.8;"></div>
+        <button class="btn-sub" onclick="closeAllM()">متوجه شدم</button>
+    </div>
+</div>
     <footer class="social-footer">
     <div class="social-container">
         <div class="social-icons">
@@ -345,6 +352,10 @@ async function doCert() {
         showL();
         const res = await fetch(`${API}/submit/${t}`, { method:'POST', headers:{'Content-Type':'application/json'}, body:JSON.stringify(d) }).then(r=>r.json());
         hideL(); alert("کد پیگیری: " + res.id); closeAllM();
+    }
+    function showMsg(text) {
+    document.getElementById('msgText').innerHTML = text;
+    openM('msgM');
     }
 </script>
 </body>
