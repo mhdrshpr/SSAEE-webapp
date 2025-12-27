@@ -27,13 +27,16 @@ def check_cert(cert_id: str):
     if not res: return {"status": "not_found"}
     cert = res[0]
     status = "valid"
+    
     if cert.get("ExpDate"):
         try:
-            if datetime.now() > datetime.strptime(cert["ExpDate"], "%Y-%m-%d"):
+            exp_date = datetime.strptime(cert["ExpDate"], "%m/%d/%Y")
+            if datetime.now() > exp_date:
                 status = "expired"
-        except: pass
+        except Exception:
+            pass  
     return {"status": "success", "cert_status": status, "data": cert}
-
+    
 @app.get("/api/cert/download/{cert_id}")
 def download_cert(cert_id: str):
     res = requests.get(f"{SHEET_URL}/tabs/Certificates/search?ID={cert_id}").json()
