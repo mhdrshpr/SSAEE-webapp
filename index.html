@@ -30,7 +30,7 @@ body {
     top: 0; left: 0;
     width: 100%; height: 100%;
     background: rgba(0,0,0,0.8);
-    z-index: 10000; 
+    z-index: 2000; 
     justify-content: center;
     align-items: center;
 }
@@ -253,58 +253,65 @@ body {
     const API = "https://ssaee.onrender.com/api";
     function showL() { document.getElementById('loader').style.display='flex'; }
     function hideL() { document.getElementById('loader').style.display='none'; }
+    
     function openM(id) { document.getElementById(id).style.display='flex'; }
+    
     function closeAllM() { document.querySelectorAll('.modal').forEach(m=>m.style.display='none'); }
 
-    // گواهی
-async function doCert() {
-    const id = document.getElementById('cInp').value;
-    if(!id) return;
-    showL();
-    try {
-        const res = await fetch(`${API}/cert/${id}`).then(r=>r.json());
-        let html = '';
-        
-        if(res.status === 'success') {
-            const d = res.data;
-            let cStatus = res.cert_status;
-
-            if (d.ExpDate) {
-                const parts = d.ExpDate.split('/');
-                const isoDate = `${parts[2]}-${parts[0]}-${parts[1]}`;
-                const expDate = new Date(isoDate);
-                expDate.setHours(23, 59, 59);
-                if (expDate < new Date()) {
-                    cStatus = 'expired';
-                }
-            }
-
-            const bClass = cStatus === 'valid' ? 'valid' : 'expired';
-            const bText = cStatus === 'valid' ? 'معتبر <i class="fa-solid fa-check"></i>' : 'منقضی شده <i class="fa-solid fa-clock"></i>';
-
-            // اضافه کردن بخش تولید HTML که در کد شما جا افتاده بود:
-            html = `
-                <div class="res-card">
-                    <div class="badge ${bClass}">${bText}</div>
-                    <div class="row"><span>شماره:</span><span>${d.ID}</span></div>
-                    <div class="row"><span>نام:</span><span>${d.NameFa}</span></div>
-                    <div class="row"><span>دوره:</span><span>${d.Course}</span></div>
-                    <div class="row"><span>تاریخ صدور:</span><span>${d.IssueDate}</span></div>
-                    <div class="row"><span>تاریخ انقضا:</span><span>${d.ExpDate || '---'}</span></div>
-                </div>`;
-        } 
-        else {
-            html = `<div class="res-card"><div class="badge invalid">نامعتبر <i class="fa-solid fa-xmark"></i></div><p style="text-align:center;font-size:11px;margin-top:10px;">یافت نشد</p></div>`;
-        }
-        
-        document.getElementById('cRes').innerHTML = html;
-    } catch (error) {
-        console.error("Fetch Error:", error);
-        showMsg("خطا در برقراری ارتباط با سرور");
-    } finally { 
-        hideL(); 
+    function showMsg(text) {
+        closeAllM(); 
+        document.getElementById('msgText').innerHTML = text;
+        openM('msgM');
     }
-}
+
+    // گواهی
+    async function doCert() {
+        const id = document.getElementById('cInp').value;
+        if(!id) return;
+        showL();
+        try {
+            const res = await fetch(`${API}/cert/${id}`).then(r=>r.json());
+            let html = '';
+            
+            if(res.status === 'success') {
+                const d = res.data;
+                let cStatus = res.cert_status;
+
+                if (d.ExpDate) {
+                    const parts = d.ExpDate.split('/');
+                    const isoDate = `${parts[2]}-${parts[0]}-${parts[1]}`;
+                    const expDate = new Date(isoDate);
+                    expDate.setHours(23, 59, 59);
+                    if (expDate < new Date()) {
+                        cStatus = 'expired';
+                    }
+                }
+
+                const bClass = cStatus === 'valid' ? 'valid' : 'expired';
+                const bText = cStatus === 'valid' ? 'معتبر <i class="fa-solid fa-check"></i>' : 'منقضی شده <i class="fa-solid fa-clock"></i>';
+
+                html = `
+                    <div class="res-card">
+                        <div class="badge ${bClass}">${bText}</div>
+                        <div class="row"><span>شماره:</span><span>${d.ID}</span></div>
+                        <div class="row"><span>نام:</span><span>${d.NameFa}</span></div>
+                        <div class="row"><span>دوره:</span><span>${d.Course}</span></div>
+                        <div class="row"><span>تاریخ صدور:</span><span>${d.IssueDate}</span></div>
+                        <div class="row"><span>تاریخ انقضا:</span><span>${d.ExpDate || '---'}</span></div>
+                    </div>`;
+            } 
+            else {
+                html = `<div class="res-card"><div class="badge invalid">نامعتبر <i class="fa-solid fa-xmark"></i></div><p style="text-align:center;font-size:11px;margin-top:10px;">یافت نشد</p></div>`;
+            }
+            
+            document.getElementById('cRes').innerHTML = html;
+        } catch (error) {
+            console.error("Fetch Error:", error);
+            showMsg("خطا در برقراری ارتباط با سرور");
+        } finally { 
+            hideL(); 
+        }
+    }
 
     async function doDownload() {
         const id = document.getElementById('dInp').value;
@@ -312,38 +319,62 @@ async function doCert() {
         try {
             const res = await fetch(`${API}/cert/download/${id}`).then(r=>r.json());
             if(res.link) window.open(res.link);
+            else showMsg("فایل یافت نشد");
+        } catch(e) {
+            showMsg("خطا در دانلود");
         } finally { hideL(); }
     }
 
     // اعضا
     async function doMemberReq() {
         const data = { Name: document.getElementById('mn').value, NationalID: document.getElementById('mi').value, StudentID: document.getElementById('ms').value };
+        
+        if(!data.Name || !data.StudentID) { showMsg("لطفاً نام و شماره دانشجویی را وارد کنید"); return; }
+
         showL();
-        const res = await fetch(`${API}/members/req`, { method:'POST', headers:{'Content-Type':'application/json'}, body:JSON.stringify(data) }).then(r=>r.json());
-        hideL(); showMsg("کد شناسایی شما: " + res.id); closeAllM();
+        try {
+            const res = await fetch(`${API}/members/req`, { method:'POST', headers:{'Content-Type':'application/json'}, body:JSON.stringify(data) }).then(r=>r.json());
+            hideL(); 
+            // ترتیب مهم: اول پیام را می‌سازیم، تابع showMsg خودش بقیه را می‌بندد
+            showMsg(`ثبت نام انجام شد.<br>کد شناسایی شما: <b>${res.id}</b>`);
+        } catch(e) {
+            hideL();
+            showMsg("خطا در ثبت درخواست");
+        }
     }
 
     async function doGetCard() {
         const id = document.getElementById('sci').value;
         showL();
-        const res = await fetch(`${API}/members/card/${id}`).then(r=>r.json());
-        hideL(); if(res.link) window.open(res.link); else showMsg("یافت نشد");
+        try {
+            const res = await fetch(`${API}/members/card/${id}`).then(r=>r.json());
+            hideL(); 
+            if(res.link) window.open(res.link); 
+            else showMsg("کارت صادر شده یافت نشد");
+        } catch(e) { hideL(); showMsg("خطا در دریافت کارت"); }
     }
 
     async function doUpgrade() {
         const id = document.getElementById('sui').value;
         showL();
-        await fetch(`${API}/members/upgrade/${id}`, { method:'PATCH' });
-        hideL(); showMsg("درخواست ارتقا ثبت شد"); closeAllM();
+        try {
+            await fetch(`${API}/members/upgrade/${id}`, { method:'PATCH' });
+            hideL(); 
+            showMsg("درخواست تمدید/ارتقا با موفقیت ثبت شد");
+        } catch(e) { hideL(); showMsg("خطا در ثبت درخواست"); }
     }
 
     async function doGetPoints() {
         const id = document.getElementById('spi').value;
         showL();
-        const res = await fetch(`${API}/members/points/${id}`).then(r=>r.json());
-        hideL();
-        if(res.name) document.getElementById('pRes').innerHTML = `<div class="res-card"><b>${res.name}</b><br>امتیاز: ${res.points}</div>`;
-        else showMsg("یافت نشد");
+        try {
+            const res = await fetch(`${API}/members/points/${id}`).then(r=>r.json());
+            hideL();
+            if(res.name) {
+                document.getElementById('pRes').innerHTML = `<div class="res-card"><b>${res.name}</b><br>امتیاز: ${res.points}</div>`;
+            }
+            else showMsg("اطلاعات یافت نشد");
+        } catch(e) { hideL(); showMsg("خطا در دریافت امتیاز"); }
     }
 
     // همکاری
@@ -363,6 +394,12 @@ async function doCert() {
 
     async function sendCol(t) {
         let d = {};
+        const f1 = document.getElementById('f1');
+        const f2 = document.getElementById('f2');
+        const f3 = document.getElementById('f3');
+        const f4 = document.getElementById('f4');
+        const f5 = document.getElementById('f5');
+
         if(t==='associations' || t==='teachers') d = { Name:f1.value, University:f2.value, Call:f3.value, Field:f4.value };
         if(t==='teachers') d.AcRank = f5.value;
         if(t==='companies') d = { Name:f1.value, Call:f2.value, Field:f3.value, Note:f4.value };
@@ -370,18 +407,14 @@ async function doCert() {
         if(t==='organize') d = { Name:f1.value, Course:f2.value, Call:f3.value };
 
         showL();
-        const res = await fetch(`${API}/submit/${t}`, { method:'POST', headers:{'Content-Type':'application/json'}, body:JSON.stringify(d) }).then(r=>r.json());
-        hideL(); showMsg("کد پیگیری: " + res.id); closeAllM();
-    }
-    function openM(id) {
-    const modal = document.getElementById(id);
-    if (modal) {
-        modal.style.display = 'flex';
-    }
-}
-    function showMsg(text) {
-    document.getElementById('msgText').innerHTML = text;
-    openM('msgM');
+        try {
+            const res = await fetch(`${API}/submit/${t}`, { method:'POST', headers:{'Content-Type':'application/json'}, body:JSON.stringify(d) }).then(r=>r.json());
+            hideL(); 
+            showMsg(`درخواست ثبت شد.<br>کد پیگیری: <b>${res.id}</b>`);
+        } catch(e) {
+            hideL();
+            showMsg("خطا در ارسال درخواست");
+        }
     }
 </script>
 </body>
