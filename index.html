@@ -120,45 +120,44 @@
     </button>
 </div>
         <button class="btn-main" style="flex-direction:row; padding:8px 15px;" onclick="window.Telegram.WebApp.close()">
-            <i class="fa-solid fa-xmark" style="font-size:14px;"></i> بازگشت
+            <i class="fa-solid fa-xmark" style="font-size:14px;"></i>بازگشت
         </button>
 <img src="logo.png" alt="SAEE Logo" onerror="this.style.display='none'" style="width: 50px; height: auto; object-fit: contain;">
     </header>
 
     <div class="card">
-        <div class="card-title"><i class="fa-solid fa-certificate"></i> بخش گواهی‌نامه‌ها</div>
+        <div class="card-title"><i class="fa-solid fa-certificate"></i>گواهی‌نامه‌ها و مدارک</div>
         <div class="grid">
-            <button class="btn-main" onclick="openM('certM')"><i class="fa-solid fa-search"></i> استعلام</button>
-            <button class="btn-main" onclick="openM('downM')"><i class="fa-solid fa-download"></i> دانلود</button>
-            <button class="btn-main full" onclick="window.location.href='https://t.me/saee_admin'"><i class="fa-solid fa-clock-rotate-left"></i> پیگیری صدور</button>
+            <button class="btn-main" onclick="openM('certM')"><i class="fa-solid fa-search"></i>استعلام</button>
+            <button class="btn-main" onclick="openM('downM')"><i class="fa-solid fa-download"></i>دانلود</button>
+            <button class="btn-main full" onclick="window.location.href='https://t.me/saee_admin'"><i class="fa-solid fa-clock-rotate-left"></i>پیگیری صدور</button>
         </div>
     </div>
 
     <div class="card">
-        <div class="card-title"><i class="fa-solid fa-user-gear"></i> پنل اعضا</div>
+        <div class="card-title"><i class="fa-solid fa-user-gear"></i>اعضای انجمن</div>
         <div class="grid">
-            <button class="btn-main" onclick="openM('mReqM')"><i class="fa-solid fa-user-plus"></i> درخواست عضویت</button>
-            <button class="btn-main" onclick="openM('mCardM')"><i class="fa-solid fa-id-card"></i> دریافت کارت</button>
-            <button class="btn-main" onclick="openM('mUpM')"><i class="fa-solid fa-angles-up"></i> تمدید/ارتقا</button>
-            <button class="btn-main" onclick="openM('mPointM')"><i class="fa-solid fa-star"></i> مشاهده امتیاز</button>
+            <button class="btn-main" onclick="openM('mReqM')"><i class="fa-solid fa-user-plus"></i>درخواست عضویت</button>
+            <button class="btn-main" onclick="openM('mCardM')"><i class="fa-solid fa-id-card"></i>دریافت کارت</button>
+            <button class="btn-main" onclick="openM('mUpM')"><i class="fa-solid fa-angles-up"></i>تمدید/ارتقا</button>
+            <button class="btn-main" onclick="openM('mPointM')"><i class="fa-solid fa-star"></i>مشاهده امتیاز</button>
         </div>
     </div>
 
     <div class="card">
-        <div class="card-title"><i class="fa-solid fa-handshake"></i> همکاری و پیشنهادات</div>
+        <div class="card-title"><i class="fa-solid fa-handshake"></i>روابط عمومی انجمن</div>
         <div class="grid">
-            <button class="btn-main" onclick="openCollab('associations')">انجمن‌ها</button>
-            <button class="btn-main" onclick="openCollab('teachers')">اساتید</button>
-            <button class="btn-main" onclick="openCollab('companies')">شرکت‌ها</button>
-            <button class="btn-main" onclick="openCollab('suggestions')">پیشنهادات</button>
+            <button class="btn-main" onclick="openCollab('associations')"><i class="fa-solid fa-building-columns">انجمن‌ها</button>
+            <button class="btn-main" onclick="openCollab('teachers')"><i class="fa-solid fa-person-chalkboard">اساتید</button>
+            <button class="btn-main" onclick="openCollab('companies')"><i class="fa-solid fa-industry">شرکت‌ها</button>
+            <button class="btn-main" onclick="openCollab('suggestions')"><i class="fa-solid fa-user-comment">پیشنهادات و انتقادات</button>
         </div>
     </div>
 
-    <div class="card">
-        <div class="card-title"><i class="fa-solid fa-chalkboard-user"></i> کارگاه و رویداد</div>
+    <div class="grid">
+        <div class="card-title"><i class="fa-solid fa-chalkboard-user"></i>کارگاه و رویداد</div>
         <button class="btn-main full" onclick="openCollab('organize')">
-            <i class="fa-solid fa-calendar-plus"></i>
-            درخواست برگزاری کارگاه</button>
+            <i class="fa-solid fa-calendar-plus"></i>درخواست برگزاری کارگاه</button>
     </div>
 </div>
 
@@ -175,7 +174,7 @@
     <div class="m-content" onclick="event.stopPropagation()">
         <i class="fa-solid fa-xmark close-btn" onclick="closeAllM()"></i>
         <input type="text" id="dInp" placeholder="شناسه گواهی">
-        <button class="btn-sub" onclick="doDownload()">دریافت لینک دانلود</button>
+        <button class="btn-sub" onclick="doDownload()">دانلود</button>
     </div>
 </div>
 
@@ -205,7 +204,7 @@
         </div>
         <div class="social-text">شبکه‌های اجتماعی انجمن علمی برق:</div>
     </div>
-    <div class="dev-credit">Developed by <b>SSAEE Tech Team</b></div>
+    <div class="dev-credit">Developed by <b>Mahdyar Shahpari X Gemini</b></div>
 </footer>
 
 <script>
