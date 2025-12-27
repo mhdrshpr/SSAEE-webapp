@@ -3,219 +3,224 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>پنل هوشمند انجمن علمی برق</title>
+    <title>SAEE Smart Panel</title>
     <link href="https://fonts.googleapis.com/css2?family=Vazirmatn:wght@400;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
     <script src="https://telegram.org/js/telegram-web-app.js"></script>
     <style>
-        :root { --bg: #000; --card: #121212; --accent: #ffcc00; --text: #ffffff; --gray: #888; }
-        body { background: var(--bg); color: var(--text); font-family: 'Vazirmatn', sans-serif; margin: 0; padding: 0; display: flex; justify-content: center; }
-        .app-container { width: 100%; max-width: 450px; padding: 20px; box-sizing: border-box; min-height: 100vh; padding-bottom: 120px; }
+        :root { --bg: #000; --card: #121212; --accent: #ffcc00; --text: #fff; --gray: #888; }
+        body { background: var(--bg); color: var(--text); font-family: 'Vazirmatn'; margin: 0; display: flex; justify-content: center; }
+        .app-container { width: 100%; max-width: 450px; padding: 20px; box-sizing: border-box; }
         
-        /* هدر */
-        .header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 30px; }
-        .nav-btns { display: flex; gap: 10px; }
-        .btn-top { background: #1a1a1a; border: 1px solid #333; color: #fff; padding: 8px 12px; border-radius: 12px; cursor: pointer; font-family: 'Vazirmatn'; font-size: 12px; display: flex; align-items: center; gap: 6px; }
-        .logo { width: 50px; }
+        /* Loader */
+        #loader { position: fixed; inset: 0; background: rgba(0,0,0,0.9); display: none; flex-direction: column; justify-content: center; align-items: center; z-index: 9999; backdrop-filter: blur(5px); }
+        .spinner { width: 40px; height: 40px; border: 4px solid #222; border-top: 4px solid var(--accent); border-radius: 50%; animation: spin 1s linear infinite; }
+        @keyframes spin { 100% { transform: rotate(360deg); } }
 
-        /* لودینگ */
-        #loader { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.85); display: none; flex-direction: column; justify-content: center; align-items: center; z-index: 9999; backdrop-filter: blur(5px); }
-        .spinner { width: 45px; height: 45px; border: 4px solid #222; border-top: 4px solid var(--accent); border-radius: 50%; animation: spin 1s linear infinite; }
-        @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
+        /* General Styles */
+        .card { background: var(--card); border: 1px solid #222; border-radius: 20px; padding: 15px; margin-bottom: 20px; }
+        .card-title { font-size: 12px; color: var(--gray); margin-bottom: 12px; font-weight: bold; display: flex; align-items: center; gap: 8px; }
+        .grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+        .btn-main { background: #1a1a1a; color: #fff; border: 1px solid #222; padding: 12px; border-radius: 15px; cursor: pointer; font-family: 'Vazirmatn'; font-size: 11px; display: flex; flex-direction: column; align-items: center; gap: 8px; }
+        .btn-main i { font-size: 18px; color: var(--accent); }
+        .full { grid-column: span 2; flex-direction: row; justify-content: center; }
 
-        /* کارت‌ها */
-        .card { background: var(--card); border: 1px solid #222; border-radius: 22px; padding: 18px; margin-bottom: 20px; }
-        .card-title { font-size: 12px; color: var(--gray); margin-bottom: 15px; font-weight: 700; display: flex; align-items: center; gap: 8px; }
-        .card-title i { color: var(--accent); }
-        .btn-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
-        .btn-main { background: #1a1a1a; color: #fff; border: 1px solid #282828; padding: 12px; border-radius: 18px; cursor: pointer; font-family: 'Vazirmatn'; font-size: 11px; display: flex; flex-direction: column; align-items: center; gap: 8px; }
-        .btn-main i { font-size: 16px; color: var(--accent); }
+        /* Modal */
+        .modal { position: fixed; inset: 0; background: rgba(0,0,0,0.95); display: none; justify-content: center; align-items: center; z-index: 1000; }
+        .m-content { background: #111; width: 85%; max-width: 350px; padding: 25px; border-radius: 25px; border: 1px solid #333; position: relative; }
+        .close-btn { position: absolute; top: 15px; left: 15px; font-size: 20px; color: #555; cursor: pointer; }
+        input, textarea { width: 100%; background: #000; border: 1px solid #222; color: #fff; padding: 12px; margin: 8px 0; border-radius: 12px; font-family: 'Vazirmatn'; text-align: center; box-sizing: border-box; }
+        .btn-sub { background: var(--accent); color: #000; border: none; width: 100%; padding: 14px; border-radius: 12px; font-family: 'Vazirmatn'; font-weight: bold; cursor: pointer; }
 
-        /* استایل کارت نتیجه استعلام (مطابق تصویر) */
-        .res-container { margin-top: 25px; display: none; animation: fadeIn 0.4s ease; }
-        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
-        .res-card { background: #080808; border: 1px solid #333; border-radius: 20px; padding: 25px 15px 15px; position: relative; margin-top: 20px; }
-        .status-badge { position: absolute; top: -15px; left: 50%; transform: translateX(-50%); padding: 6px 20px; border-radius: 50px; font-weight: bold; font-size: 13px; color: #fff; display: flex; align-items: center; gap: 8px; white-space: nowrap; }
-        .status-valid { background: #004d26; border: 1px solid #00c853; }
-        .status-expired { background: #222; border: 1px solid #666; }
-        .status-invalid { background: #5d0000; border: 1px solid #ff1744; }
-        .res-row { display: flex; justify-content: space-between; margin: 12px 0; font-size: 12px; border-bottom: 1px solid #1a1a1a; padding-bottom: 6px; }
-        .res-label { color: #fff; font-weight: bold; }
-        .res-value { color: #aaa; direction: ltr; }
-
-        /* پنجره‌ها (Modals) */
-        .modal { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.9); display: none; justify-content: center; align-items: center; z-index: 2000; }
-        .modal-content { background: #111; width: 85%; max-width: 350px; padding: 25px; border-radius: 25px; border: 1px solid #222; position: relative; }
-        .close-btn { position: absolute; top: 15px; left: 15px; color: #555; font-size: 22px; cursor: pointer; }
-        input, textarea { width: 100%; background: #000; border: 1px solid #333; color: #fff; padding: 12px; margin: 8px 0; border-radius: 12px; font-family: 'Vazirmatn'; text-align: center; box-sizing: border-box; }
-        .btn-submit { background: var(--accent); color: #000; border: none; width: 100%; padding: 14px; border-radius: 12px; font-family: 'Vazirmatn'; font-weight: bold; margin-top: 10px; cursor: pointer; }
-
-        /* فوتر */
-        .footer { position: fixed; bottom: 20px; width: calc(100% - 40px); max-width: 410px; background: #111; border: 1px solid #222; border-radius: 20px; padding: 12px; display: flex; justify-content: space-between; align-items: center; }
-        .dev-tag { position: fixed; bottom: 5px; width: 100%; text-align: center; font-size: 9px; color: #444; }
-        #toast { position: fixed; top: 20px; background: var(--accent); color: #000; padding: 8px 15px; border-radius: 10px; font-weight: bold; display: none; z-index: 3000; font-size: 12px; }
+        /* Result Card */
+        .res-card { background: #080808; border: 1px solid #333; border-radius: 15px; padding: 20px 15px 10px; position: relative; margin-top: 25px; }
+        .badge { position: absolute; top: -12px; left: 50%; transform: translateX(-50%); padding: 5px 15px; border-radius: 50px; font-size: 11px; font-weight: bold; color: #fff; }
+        .valid { background: #004d26; border: 1px solid #00c853; }
+        .expired { background: #222; border: 1px solid #666; }
+        .invalid { background: #5d0000; border: 1px solid #ff1744; }
+        .row { display: flex; justify-content: space-between; font-size: 11px; margin-bottom: 8px; border-bottom: 1px solid #111; padding-bottom: 4px; }
     </style>
 </head>
 <body>
 
-<div id="loader"><div class="spinner"></div><div style="color:var(--accent); margin-top:15px; font-size:12px;">در حال پردازش...</div></div>
-<div id="toast">بزودی فعال می‌شود</div>
+<div id="loader"><div class="spinner"></div></div>
 
 <div class="app-container">
-    <header class="header">
-        <div class="nav-btns">
-            <button class="btn-top" onclick="tg.close()"><i class="fa-solid fa-xmark"></i> بستن</button>
-            <button class="btn-top" onclick="window.location.href='https://t.me/saee_admin'"><i class="fa-solid fa-headset"></i> پشتیبانی</button>
-        </div>
-        <img src="logo.png" class="logo">
+    <header style="display:flex; justify-content:space-between; align-items:center; margin-bottom:20px;">
+        <button class="btn-main" style="flex-direction:row; padding:8px 15px;" onclick="window.Telegram.WebApp.close()">
+            <i class="fa-solid fa-xmark" style="font-size:14px;"></i> بازگشت
+        </button>
+        <img src="logo.png" style="width:50px;">
     </header>
 
     <div class="card">
-        <div class="card-title"><i class="fa-solid fa-certificate"></i> استعلام و مدارک</div>
-        <div class="btn-grid">
-            <button class="btn-main" onclick="openM('certM')"><i class="fa-solid fa-magnifying-glass"></i> استعلام اصالت</button>
-            <button class="btn-main" onclick="showSoon()"><i class="fa-solid fa-download"></i> دانلود مدرک</button>
+        <div class="card-title"><i class="fa-solid fa-certificate"></i> بخش گواهی‌نامه‌ها</div>
+        <div class="grid">
+            <button class="btn-main" onclick="openM('certM')"><i class="fa-solid fa-search"></i> استعلام</button>
+            <button class="btn-main" onclick="openM('downM')"><i class="fa-solid fa-download"></i> دانلود</button>
+            <button class="btn-main full" onclick="window.location.href='https://t.me/saee_admin'"><i class="fa-solid fa-clock-rotate-left"></i> پیگیری صدور</button>
         </div>
     </div>
 
     <div class="card">
-        <div class="card-title"><i class="fa-solid fa-user-shield"></i> پنل اعضا</div>
-        <div class="btn-grid">
-            <button class="btn-main" onclick="openM('mReqM')"><i class="fa-solid fa-user-plus"></i> عضویت جدید</button>
-            <button class="btn-main" onclick="showSoon()"><i class="fa-solid fa-id-card"></i> کارت عضویت</button>
+        <div class="card-title"><i class="fa-solid fa-user-gear"></i> پنل اعضا</div>
+        <div class="grid">
+            <button class="btn-main" onclick="openM('mReqM')"><i class="fa-solid fa-user-plus"></i> درخواست عضویت</button>
+            <button class="btn-main" onclick="openM('mCardM')"><i class="fa-solid fa-id-card"></i> دریافت کارت</button>
+            <button class="btn-main" onclick="openM('mUpM')"><i class="fa-solid fa-angles-up"></i> تمدید/ارتقا</button>
+            <button class="btn-main" onclick="openM('mPointM')"><i class="fa-solid fa-star"></i> مشاهده امتیاز</button>
         </div>
     </div>
 
     <div class="card">
-        <div class="card-title"><i class="fa-solid fa-handshake"></i> تعامل و پیشنهاد</div>
-        <div class="btn-grid">
-            <button class="btn-main" onclick="openCollab('suggestions')"><i class="fa-solid fa-comment-dots"></i> پیشنهادات</button>
-            <button class="btn-main" onclick="showSoon()"><i class="fa-solid fa-briefcase"></i> فرصت همکاری</button>
+        <div class="card-title"><i class="fa-solid fa-handshake"></i> همکاری و پیشنهادات</div>
+        <div class="grid">
+            <button class="btn-main" onclick="openCollab('associations')">انجمن‌ها</button>
+            <button class="btn-main" onclick="openCollab('teachers')">اساتید</button>
+            <button class="btn-main" onclick="openCollab('companies')">شرکت‌ها</button>
+            <button class="btn-main" onclick="openCollab('suggestions')">پیشنهادات</button>
         </div>
+    </div>
+
+    <div class="card">
+        <div class="card-title"><i class="fa-solid fa-chalkboard-user"></i> کارگاه و رویداد</div>
+        <button class="btn-main full" onclick="openCollab('organize')">درخواست برگزاری کارگاه</button>
     </div>
 </div>
 
-<footer class="footer">
-    <div style="display:flex; gap:10px;">
-        <a href="https://t.me/saee_iust" style="color:#0088cc;"><i class="fa-brands fa-telegram fa-xl"></i></a>
-        <a href="#" style="color:#e4405f;"><i class="fa-brands fa-instagram fa-xl"></i></a>
-    </div>
-    <div style="font-size:11px; font-weight:bold;">انجمن علمی برق علم و صنعت</div>
-</footer>
-<div class="dev-tag">Developed by SAEE Tech Team</div>
-
 <div id="certM" class="modal" onclick="closeAllM()">
-    <div class="modal-content" onclick="event.stopPropagation()">
+    <div class="m-content" onclick="event.stopPropagation()">
         <i class="fa-solid fa-xmark close-btn" onclick="closeAllM()"></i>
-        <h3 style="text-align:center; font-size:16px; color:var(--accent);">استعلام گواهینامه</h3>
-        <input type="text" id="certId" placeholder="شماره سریال را وارد کنید">
-        <button class="btn-submit" onclick="apiCheckCert()">شروع استعلام</button>
-        <div id="certRes" class="res-container"></div>
+        <input type="text" id="cInp" placeholder="شناسه گواهی">
+        <button class="btn-sub" onclick="doCert()">بررسی</button>
+        <div id="cRes"></div>
+    </div>
+</div>
+
+<div id="downM" class="modal" onclick="closeAllM()">
+    <div class="m-content" onclick="event.stopPropagation()">
+        <i class="fa-solid fa-xmark close-btn" onclick="closeAllM()"></i>
+        <input type="text" id="dInp" placeholder="شناسه گواهی">
+        <button class="btn-sub" onclick="doDownload()">دریافت لینک دانلود</button>
     </div>
 </div>
 
 <div id="mReqM" class="modal" onclick="closeAllM()">
-    <div class="modal-content" onclick="event.stopPropagation()">
+    <div class="m-content" onclick="event.stopPropagation()">
         <i class="fa-solid fa-xmark close-btn" onclick="closeAllM()"></i>
-        <h3 style="text-align:center; font-size:16px; color:var(--accent);">درخواست عضویت</h3>
-        <input type="text" id="mName" placeholder="نام و نام خانوادگی">
-        <input type="text" id="mNID" placeholder="کد ملی">
-        <input type="text" id="mSID" placeholder="شماره دانشجویی">
-        <button class="btn-submit" onclick="apiMemberReq()">ثبت اطلاعات</button>
+        <input id="mn" placeholder="نام کامل">
+        <input id="mi" placeholder="کد ملی">
+        <input id="ms" placeholder="کد دانشجویی">
+        <button class="btn-sub" onclick="doMemberReq()">ثبت نام</button>
     </div>
 </div>
 
-<div id="collabM" class="modal" onclick="closeAllM()">
-    <div class="modal-content" id="collabBody" onclick="event.stopPropagation()"></div>
+<div id="mCardM" class="modal" onclick="closeAllM()"><div class="m-content" onclick="event.stopPropagation()"><i class="fa-solid fa-xmark close-btn" onclick="closeAllM()"></i><input id="sci" placeholder="کد دانشجویی"><button class="btn-sub" onclick="doGetCard()">دریافت فایل کارت</button></div></div>
+<div id="mUpM" class="modal" onclick="closeAllM()"><div class="m-content" onclick="event.stopPropagation()"><i class="fa-solid fa-xmark close-btn" onclick="closeAllM()"></i><input id="sui" placeholder="کد دانشجویی"><button class="btn-sub" onclick="doUpgrade()">درخواست ارتقا</button></div></div>
+<div id="mPointM" class="modal" onclick="closeAllM()"><div class="m-content" onclick="event.stopPropagation()"><i class="fa-solid fa-xmark close-btn" onclick="closeAllM()"></i><input id="spi" placeholder="کد دانشجویی"><button class="btn-sub" onclick="doGetPoints()">مشاهده امتیاز</button><div id="pRes"></div></div></div>
+
+<div id="colM" class="modal" onclick="closeAllM()">
+    <div class="m-content" id="colB" onclick="event.stopPropagation()"></div>
 </div>
 
 <script>
-    const API_URL = "https://ssaee.onrender.com/api";
-    const tg = window.Telegram.WebApp;
-    tg.expand();
+    const API = "https://ssaee.onrender.com/api";
+    function showL() { document.getElementById('loader').style.display='flex'; }
+    function hideL() { document.getElementById('loader').style.display='none'; }
+    function openM(id) { document.getElementById(id).style.display='flex'; }
+    function closeAllM() { document.querySelectorAll('.modal').forEach(m=>m.style.display='none'); }
 
-    function showLoading() { document.getElementById('loader').style.display = 'flex'; }
-    function hideLoading() { document.getElementById('loader').style.display = 'none'; }
-    function openM(id) { document.getElementById(id).style.display = 'flex'; }
-    function closeAllM() { document.querySelectorAll('.modal').forEach(m => m.style.display='none'); }
-    
-    function showSoon() {
-        const t = document.getElementById('toast');
-        t.style.display = 'block';
-        setTimeout(() => t.style.display = 'none', 3000);
-    }
-
-    async function apiCheckCert() {
-        const id = document.getElementById('certId').value;
-        if(!id) return;
-        
-        showLoading(); // نمایش لودینگ
-        const resDiv = document.getElementById('certRes');
-        resDiv.style.display = 'none';
-
+    // گواهی
+    async function doCert() {
+        const id = document.getElementById('cInp').value;
+        showL();
         try {
-            const response = await fetch(`${API_URL}/cert/${id}`);
-            const res = await response.json();
+            const res = await fetch(`${API}/cert/${id}`).then(r=>r.json());
             let html = '';
-
             if(res.status === 'success') {
                 const d = res.data;
-                const isExp = res.cert_status === 'expired';
-                const bClass = isExp ? 'status-expired' : 'status-valid';
-                const bText = isExp ? 'منقضی شده <i class="fa-solid fa-clock"></i>' : 'معتبر <i class="fa-solid fa-circle-check"></i>';
-                
-                html = `
-                    <div class="res-card">
-                        <div class="status-badge ${bClass}">${bText}</div>
-                        <div class="res-row"><span class="res-label">شماره گواهینامه:</span><span class="res-value">${d.ID}</span></div>
-                        <div class="res-row"><span class="res-label">نام فارسی:</span><span class="res-value">${d.NameFa}</span></div>
-                        <div class="res-row"><span class="res-label">نام انگلیسی:</span><span class="res-value">${d.NameEn || '---'}</span></div>
-                        <div class="res-row"><span class="res-label">دوره:</span><span class="res-value">${d.Course}</span></div>
-                        <div class="res-row"><span class="res-label">تاریخ صدور:</span><span class="res-value">${d.IssueDate}</span></div>
-                        <div class="res-row"><span class="res-label">تاریخ انقضا:</span><span class="res-value">${d.ExpDate || '---'}</span></div>
-                    </div>`;
+                const b = res.cert_status === 'valid' ? 'valid' : 'expired';
+                const t = res.cert_status === 'valid' ? 'معتبر' : 'منقضی شده';
+                html = `<div class="res-card"><div class="badge ${b}">${t}</div>
+                    <div class="row"><span>شناسه:</span><span>${d.ID}</span></div>
+                    <div class="row"><span>نام فارسی:</span><span>${d.NameFa}</span></div>
+                    <div class="row"><span>نام انگلیسی:</span><span>${d.NameEn}</span></div>
+                    <div class="row"><span>دوره:</span><span>${d.Course}</span></div>
+                    <div class="row"><span>صدور:</span><span>${d.IssueDate}</span></div>
+                    <div class="row"><span>انقضا:</span><span>${d.ExpDate}</span></div></div>`;
             } else {
-                html = `
-                    <div class="res-card">
-                        <div class="status-badge status-invalid">نامعتبر <i class="fa-solid fa-circle-xmark"></i></div>
-                        <p style="text-align:center; color:#666; font-size:11px; margin-top:10px;">شناسه وارد شده در سیستم یافت نشد.</p>
-                    </div>`;
+                html = `<div class="res-card"><div class="badge invalid">نامعتبر</div><p style="text-align:center;font-size:11px;">یافت نشد</p></div>`;
             }
-            resDiv.innerHTML = html;
-            resDiv.style.display = 'block';
-        } catch { alert("خطا در ارتباط با سرور"); }
-        finally { hideLoading(); } // پنهان کردن لودینگ
+            document.getElementById('cRes').innerHTML = html;
+        } finally { hideL(); }
     }
 
-    async function apiMemberReq() {
-        const data = { Name: document.getElementById('mName').value, NationalID: document.getElementById('mNID').value, StudentID: document.getElementById('mSID').value };
-        if(!data.Name || !data.StudentID) return;
-        showLoading();
+    async function doDownload() {
+        const id = document.getElementById('dInp').value;
+        showL();
         try {
-            const res = await fetch(`${API_URL}/members/req`, { method:'POST', headers:{'Content-Type':'application/json'}, body:JSON.stringify(data) }).then(r=>r.json());
-            alert("ثبت شد. کد پیگیری: " + res.id);
-            closeAllM();
-        } catch { alert("خطا در ثبت"); }
-        finally { hideLoading(); }
+            const res = await fetch(`${API}/cert/download/${id}`).then(r=>r.json());
+            if(res.link) window.open(res.link);
+        } finally { hideL(); }
     }
 
-    function openCollab(type) {
-        let html = `<i class="fa-solid fa-xmark close-btn" onclick="closeAllM()"></i><h3 style="text-align:center; color:var(--accent);">ارسال پیشنهاد</h3>`;
-        html += `<input id="cCall" placeholder="شماره تماس"><input id="cSub" placeholder="موضوع"><textarea id="cNote" placeholder="متن شما" rows="4"></textarea>`;
-        html += `<button class="btn-submit" onclick="apiSubmit('${type}')">ارسال پیام</button>`;
-        document.getElementById('collabBody').innerHTML = html;
-        openM('collabM');
+    // اعضا
+    async function doMemberReq() {
+        const data = { Name: document.getElementById('mn').value, NationalID: document.getElementById('mi').value, StudentID: document.getElementById('ms').value };
+        showL();
+        const res = await fetch(`${API}/members/req`, { method:'POST', headers:{'Content-Type':'application/json'}, body:JSON.stringify(data) }).then(r=>r.json());
+        hideL(); alert("کد شناسایی شما: " + res.id); closeAllM();
     }
 
-    async function apiSubmit(type) {
-        const data = { Call: document.getElementById('cCall').value, Subject: document.getElementById('cSub').value, Note: document.getElementById('cNote').value };
-        showLoading();
-        try {
-            const res = await fetch(`${API_URL}/submit/${type}`, { method:'POST', headers:{'Content-Type':'application/json'}, body:JSON.stringify(data) }).then(r=>r.json());
-            alert("دریافت شد. کد: " + res.id);
-            closeAllM();
-        } catch { alert("خطا در ارسال"); }
-        finally { hideLoading(); }
+    async function doGetCard() {
+        const id = document.getElementById('sci').value;
+        showL();
+        const res = await fetch(`${API}/members/card/${id}`).then(r=>r.json());
+        hideL(); if(res.link) window.open(res.link); else alert("یافت نشد");
+    }
+
+    async function doUpgrade() {
+        const id = document.getElementById('sui').value;
+        showL();
+        await fetch(`${API}/members/upgrade/${id}`, { method:'PATCH' });
+        hideL(); alert("درخواست ارتقا ثبت شد"); closeAllM();
+    }
+
+    async function doGetPoints() {
+        const id = document.getElementById('spi').value;
+        showL();
+        const res = await fetch(`${API}/members/points/${id}`).then(r=>r.json());
+        hideL();
+        if(res.name) document.getElementById('pRes').innerHTML = `<div class="res-card"><b>${res.name}</b><br>امتیاز: ${res.points}</div>`;
+        else alert("یافت نشد");
+    }
+
+    // همکاری
+    function openCollab(t) {
+        let h = `<i class="fa-solid fa-xmark close-btn" onclick="closeAllM()"></i>`;
+        if(t==='associations' || t==='teachers') {
+            h += `<input id="f1" placeholder="نام انجمن/استاد"><input id="f2" placeholder="دانشگاه"><input id="f3" placeholder="شماره تماس"><input id="f4" placeholder="رشته">`;
+            if(t==='teachers') h += `<input id="f5" placeholder="مرتبه علمی">`;
+        } else if(t==='companies') {
+            h += `<input id="f1" placeholder="نام شرکت"><input id="f2" placeholder="شماره تماس"><input id="f3" placeholder="رشته"><textarea id="f4" placeholder="توضیحات"></textarea>`;
+        } else if(t==='suggestions' || t==='organize') {
+            h += `<input id="f1" placeholder="${t==='organize'?'نام':'شماره تماس'}"><input id="f2" placeholder="${t==='organize'?'دوره':'موضوع'}"><textarea id="f3" placeholder="توضیحات/شماره تماس"></textarea>`;
+        }
+        h += `<button class="btn-sub" onclick="sendCol('${t}')">ارسال</button>`;
+        document.getElementById('colB').innerHTML = h; openM('colM');
+    }
+
+    async function sendCol(t) {
+        let d = {};
+        if(t==='associations' || t==='teachers') d = { Name:f1.value, University:f2.value, Call:f3.value, Field:f4.value };
+        if(t==='teachers') d.AcRank = f5.value;
+        if(t==='companies') d = { Name:f1.value, Call:f2.value, Field:f3.value, Note:f4.value };
+        if(t==='suggestions') d = { Call:f1.value, Subject:f2.value, Note:f3.value };
+        if(t==='organize') d = { Name:f1.value, Course:f2.value, Call:f3.value };
+
+        showL();
+        const res = await fetch(`${API}/submit/${t}`, { method:'POST', headers:{'Content-Type':'application/json'}, body:JSON.stringify(d) }).then(r=>r.json());
+        hideL(); alert("کد پیگیری: " + res.id); closeAllM();
     }
 </script>
 </body>
