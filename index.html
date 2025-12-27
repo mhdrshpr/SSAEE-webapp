@@ -160,8 +160,8 @@ body {
     <div class="card">
         <div class="card-title"><i class="fa-solid fa-certificate"></i>گواهی‌نامه‌ها و مدارک</div>
         <div class="grid">
-            <button class="btn-main" onclick="openM('certM')"><i class="fa-solid fa-search"></i>استعلام</button>
-            <button class="btn-main" onclick="openM('downM')"><i class="fa-solid fa-download"></i>دانلود</button>
+            <button class="btn-main" onclick="openM('certM')"><i class="fa-solid fa-search"></i>استعلام اعتبار گواهی‌نامه</button>
+            <button class="btn-main" onclick="openM('downM')"><i class="fa-solid fa-download"></i>دانلود فایل گواهی‌نامه</button>
             <button class="btn-main full" onclick="window.location.href='https://t.me/saee_admin'"><i class="fa-solid fa-clock-rotate-left"></i>پیگیری صدور</button>
         </div>
     </div>
@@ -170,7 +170,7 @@ body {
         <div class="card-title"><i class="fa-solid fa-user-gear"></i>اعضای انجمن</div>
         <div class="grid">
             <button class="btn-main" onclick="openM('mReqM')"><i class="fa-solid fa-user-plus"></i>درخواست عضویت</button>
-            <button class="btn-main" onclick="openM('mCardM')"><i class="fa-solid fa-id-card"></i>دریافت کارت</button>
+            <button class="btn-main" onclick="openM('mCardM')"><i class="fa-solid fa-id-card"></i>دانلود کارت</button>
             <button class="btn-main" onclick="openM('mUpM')"><i class="fa-solid fa-angles-up"></i>تمدید/ارتقا</button>
             <button class="btn-main" onclick="openM('mPointM')"><i class="fa-solid fa-star"></i>مشاهده امتیاز</button>
         </div>
@@ -232,9 +232,12 @@ body {
 </div>
     <div id="msgM" class="modal" onclick="closeAllM()">
     <div class="m-content" onclick="event.stopPropagation()" style="text-align: center;">
-        <i class="fa-solid fa-circle-check" style="font-size: 50px; color: var(--accent); margin-bottom: 25px;"></i>
+        <i class="fa-solid fa-circle-info" style="font-size: 50px; color: var(--accent); margin-bottom: 25px;"></i>
         <div id="msgText" style="font-size: 14px; line-height: 1.8; margin-bottom: 25px;"></div>
-        <button class="btn-sub" onclick="closeAllM()">متوجه شدم</button>
+        <button class="btn-sub" onclick="closeAllM()" style="display: flex; align-items: center; justify-content: center; gap: 8px;">
+    <i class="fa-solid fa-check"></i>
+    متوجه شدم
+</button>
     </div>
 </div>
     <footer class="social-footer">
@@ -354,15 +357,25 @@ body {
         } catch(e) { hideL(); showMsg("خطا در دریافت کارت"); }
     }
 
-    async function doUpgrade() {
-        const id = document.getElementById('sui').value;
-        showL();
-        try {
-            await fetch(`${API}/members/upgrade/${id}`, { method:'PATCH' });
-            hideL(); 
-            showMsg("درخواست تمدید/ارتقا با موفقیت ثبت شد");
-        } catch(e) { hideL(); showMsg("خطا در ثبت درخواست"); }
+async function doUpgrade() {
+    const id = document.getElementById('sui').value;
+    if(!id) return;
+    showL();
+    try {
+        const response = await fetch(`${API}/members/upgrade/${id}`, { method:'PATCH' });
+        const res = await response.json(); 
+
+        hideL();
+        if(response.ok && res.status === 'success') {
+            showMsg("درخواست تمدید/ارتقا با موفقیت ثبت شد.");
+        } else {
+            showMsg("شماره دانشجویی شما در لیست اعضا یافت نشد. ابتدا باید عضو انجمن شوید.");
+        }
+    } catch(e) { 
+        hideL(); 
+        showMsg("خطا در برقراری ارتباط با سرور"); 
     }
+}
 
     async function doGetPoints() {
         const id = document.getElementById('spi').value;
@@ -373,7 +386,7 @@ body {
             if(res.name) {
                 document.getElementById('pRes').innerHTML = `<div class="res-card"><b>${res.name}</b><br>امتیاز: ${res.points}</div>`;
             }
-            else showMsg("اطلاعات یافت نشد");
+            else showMsg("شماره دانشجویی شما در لیست اعضا یافت نشد. ابتدا باید عضو انجمن شوید.");
         } catch(e) { hideL(); showMsg("خطا در دریافت امتیاز"); }
     }
 
