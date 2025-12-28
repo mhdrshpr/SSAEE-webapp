@@ -20,9 +20,14 @@ SHEET_URL = os.getenv("SHEETBEST_URL")
 
 def get_now():
     return datetime.now().strftime("%Y-%m-%d")
-@app.get("/")
-async def get_index():
-    return FileResponse("index.html")
+from fastapi.responses import FileResponse
+
+@app.get("/logo.png")
+async def get_logo():
+    file_path = os.path.join("static", "logo.png") 
+    if os.path.exists(file_path):
+        return FileResponse(file_path)
+    return {"error": "File not found in static folder"}
 
 # --- بخش گواهی ---
 @app.get("/api/cert/{cert_id}")
