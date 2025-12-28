@@ -60,21 +60,32 @@ def get_card(sid: str):
 @app.patch("/api/members/upgrade/{id}")
 def member_upgrade(id: str):
     try:
-        search_url = f"{SHEET_URL}/tabs/Members/search?StudentID={id}"
-        response = requests.get(search_url)
-        res_data = response.json()
-
-        if not res_data or (isinstance(res_data, list) and len(res_data) == 0):
+        # ۱. جستجوی کاربر با متد Search
+        search_res = requests.get(f"{SHEET_URL}/tabs/Members/search?StudentID={id}").json()
+        
+        # بررسی اینکه آیا کاربر اصلاً وجود دارد؟
+        if not search_res or (isinstance(search_res, list) and len(search_res) == 0):
             return {"status": "error", "code": "NOT_FOUND"}, 404
-
-        user_data = res_data[0] if isinstance(res_data, list) else res_data
-
-        upgrade_val = str(user_data.get("UpgradeReq", "")).upper()
-        if upgrade_val == "TRUE":
+        
+        # استخراج داده‌های کاربر
+        user_data = search_res[0] if isinstance(search_res, list) else search_res
+        
+        # ۲. بررسی فیلد UpgradeReq (با حساسیت کمتر به نام فیلد و مقدار)
+        # این خط چک می‌کند اگر هر فیلدی که با Upgrade شروع می‌شود TRUE باشد
+        upgrade_status = False
+        for key, value in user_data.items():
+            if key.lower() == "upgradereq" and str(value).upper() == "TRUE":
+                upgrade_status = True
+                break
+        
+        if upgrade_status:
             return {"status": "error", "code": "ALREADY_EXISTS"}, 200
 
-        update_url = f"{SHEET_URL}/tabs/Members/StudentID/{id}"
-        update_res = requests.patch(update_url, json={"UpgradeReq": "TRUE"})
+        # ۳. ارسال درخواست آپدیت به ردیف مشخص
+        update_res = requests.patch(
+            f"{SHEET_URL}/tabs/Members/StudentID/{id}", 
+            json={"UpgradeReq": "TRUE"}
+        )
 
         if update_res.status_code in [200, 201]:
             return {"status": "success"}
@@ -82,8 +93,7 @@ def member_upgrade(id: str):
             return {"status": "error", "code": "UPDATE_FAILED"}, 500
 
     except Exception as e:
-        print(f"Error: {str(e)}")
-        return {"status": "error", "code": "SERVER_EXCEPTION", "details": str(e)}, 500
+        return {"status": "error", "code": "SERVER_ERROR", "details": str(e)}, 500
         
 @app.get("/api/members/points/{sid}")
 def get_points(sid: str):
