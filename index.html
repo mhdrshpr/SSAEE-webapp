@@ -147,9 +147,13 @@ body {
         align-items: center; 
         justify-content: space-between; 
         padding: 10px 15px; 
-        background-color: #000; 
-        border-bottom: 1px solid #ddd;
-        position: -webkit-sticky; 
+        background-color: rgba(0, 0, 0, 0.3);
+        backdrop-filter: blur(5px);
+        -webkit-backdrop-filter: blur(5px);
+        border-bottom-left-radius: 20px;
+        border-bottom-right-radius: 20px;
+        position: -webkit-sticky;
+        border-bottom: 1px solid rgba(255, 255, 255, 0.1);
         position: sticky;
         top: 0;
         z-index: 1000;
@@ -164,7 +168,7 @@ body {
             </button>
         </div>
         <div style="flex: 1; display: flex; justify-content: center;">
-            <img src="/static/logo.png" 
+            <img src="https://drive.usercontent.google.com/download?id=1dKCZJFb3Zv-4wa3GF0sl6mTJMb53Eyqe&export=view&authuser=0" 
              alt="SSAEE Logo" 
              style="width: 50px; height: auto; object-fit: contain;">
         </div>
@@ -262,7 +266,13 @@ body {
     </div>
 </div>
     <footer class="social-footer">
-    <div class="social-container">
+    <div class="social-container"
+        class="social-footer"
+        Style="
+        background-color: rgba(0, 0, 0, 0.3);
+        backdrop-filter: blur(5px);
+        -webkit-backdrop-filter: blur(5px);
+        ">
         <div class="social-icons">
             <a href="https://t.me/srbiausaee" class="s-icon tg"><i class="fa-brands fa-telegram"></i></a>
             <a href="https://instagram.com/srbiaussaee" class="s-icon ig"><i class="fa-brands fa-instagram"></i></a>
@@ -270,7 +280,7 @@ body {
         </div>
         <div class="social-text">شبکه‌های اجتماعی انجمن علمی برق</div>
     </div>
-    <div class="dev-credit">Developed by <b>Mahdyar Shahpari X Gemini</b></div>
+    <div class="dev-credit">Developed by <b>Mahdyar Shahpari X Gemini AI</b></div>
 </footer>
 
 <script>
