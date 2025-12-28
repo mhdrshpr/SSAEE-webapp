@@ -190,17 +190,17 @@ body {
         <div class="grid">
             <button class="btn-main" onclick="openM('mReqM')"><i class="fa-solid fa-user-plus"></i>درخواست عضویت</button>
             <button class="btn-main" onclick="openM('mCardM')"><i class="fa-solid fa-id-card"></i>دانلود کارت</button>
-            <button class="btn-main" onclick="openM('mUpM')"><i class="fa-solid fa-angles-up"></i>تمدید/ارتقا</button>
+            <button class="btn-main" onclick="openM('mUpM')"><i class="fa-solid fa-angles-up"></i>تمدید / ارتقا به فعال</button>
             <button class="btn-main" onclick="openM('mPointM')"><i class="fa-solid fa-star"></i>مشاهده امتیاز</button>
         </div>
     </div>
 
     <div class="card">
-        <div class="card-title"><i class="fa-solid fa-handshake"></i>روابط عمومی انجمن</div>
+        <div class="card-title"><i class="fa-solid fa-handshake"></i>همکاری با انجمن ما</div>
         <div class="grid">
-            <button class="btn-main" onclick="openCollab('associations')"><i class="fa-solid fa-building-columns"></i>انجمن‌ها</button>
-            <button class="btn-main" onclick="openCollab('teachers')"><i class="fa-solid fa-person-chalkboard"></i>اساتید</button>
-            <button class="btn-main" onclick="openCollab('companies')"><i class="fa-solid fa-industry"></i>شرکت‌ها</button>
+            <button class="btn-main" onclick="openCollab('associations')"><i class="fa-solid fa-building-columns"></i>همکاری با انجمن‌ها</button>
+            <button class="btn-main" onclick="openCollab('teachers')"><i class="fa-solid fa-person-chalkboard"></i>همکاری با اساتیده</button>
+            <button class="btn-main" onclick="openCollab('companies')"><i class="fa-solid fa-industry"></i>همکاری با شرکت‌ها</button>
             <button class="btn-main" onclick="openCollab('suggestions')"><i class="fa-solid fa-comment-dots"></i>پیشنهادات و انتقادات</button>
         </div>
     </div>
@@ -211,6 +211,11 @@ body {
         <button class="btn-main" onclick="openCollab('organize')"><i class="fa-solid fa-calendar-day"></i>درخواست برگزاری کارگاه</button>
         <button class="btn-main" onclick="openCollab('organize')"><i class="fa-solid fa-calendar-plus"></i>درخواست برگزاری حل تمرین</button>
         </div>
+    </div>
+    <div style="text-align: center; margin: 25px 0 15px 0;">
+    <button onclick="window.location.href='https://t.me/mh2pr'" style="background: #1a1a1a; border: 1px solid #333; color: #fff; padding: 8px 12px; border-radius: 12px; cursor: pointer;  font-family: 'Vazirmatn';  font-size: 12px; align-items: center; gap: 6px;" class="btn-top">
+            <i class="fa-solid fa-bug"></i>  گزارش باگ و خطا در پنل
+    </button>
     </div>
     <div style="height: 80px;"></div>
 </div>
@@ -245,7 +250,18 @@ body {
 
 <div id="mCardM" class="modal" onclick="closeAllM()"><div class="m-content" onclick="event.stopPropagation()"><i class="fa-solid fa-xmark close-btn" onclick="closeAllM()"></i><input id="sci" placeholder="کد دانشجویی"><button class="btn-sub" onclick="doGetCard()">دریافت فایل کارت</button></div></div>
 <div id="mUpM" class="modal" onclick="closeAllM()"><div class="m-content" onclick="event.stopPropagation()"><i class="fa-solid fa-xmark close-btn" onclick="closeAllM()"></i><input id="sui" placeholder="کد دانشجویی"><button class="btn-sub" onclick="doUpgrade()">درخواست ارتقا</button></div></div>
-<div id="mPointM" class="modal" onclick="closeAllM()"><div class="m-content" onclick="event.stopPropagation()"><i class="fa-solid fa-xmark close-btn" onclick="closeAllM()"></i><input id="spi" placeholder="کد دانشجویی"><button class="btn-sub" onclick="doGetPoints()">مشاهده امتیاز</button><div id="pRes"></div></div></div>
+<div id="mPointM" class="modal" onclick="closeAllM()">
+    <div class="m-content" onclick="event.stopPropagation()">
+        <i class="fa-solid fa-xmark close-btn" onclick="closeAllM()">
+            
+        </i><input id="spi" placeholder="کد دانشجویی">
+        <button class="btn-sub" onclick="doGetPoints()">مشاهده امتیاز</button>
+        <p style="font-size: 11px; color: #888; text-align: center; margin-top: 10px; margin-bottom: 5px;">
+            امتیازات به صورت ماهانه و در ابتدای ماه بروزرسانی می‌شوند.
+        </p>
+        <div id="pRes"></div>
+    </div>
+</div>
 
 <div id="colM" class="modal" onclick="closeAllM()">
     <div class="m-content" id="colB" onclick="event.stopPropagation()"></div>
@@ -275,7 +291,7 @@ body {
         </div>
         <div class="social-text">شبکه‌های اجتماعی انجمن علمی برق</div>
     </div>
-    <div class="dev-credit">Developed by <b>Mahdyar Shahpari X Gemini AI</b></div>
+    <div class="dev-credit">V2 Beta - Developed by <b>Mahdyar Shahpari X Gemini AI</b></div>
 </footer>
 
 <script>
