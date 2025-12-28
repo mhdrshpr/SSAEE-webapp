@@ -352,7 +352,7 @@ body {
             const res = await fetch(`${API}/members/card/${id}`).then(r=>r.json());
             hideL(); 
             if(res.link) window.open(res.link); 
-            else showMsg("کارت صادر شده یافت نشد");
+            else showMsg("کارتی برای این شماره دانشجویی صادر نشده است.");
         } catch(e) { hideL(); showMsg("خطا در دریافت کارت"); }
     }
 
@@ -373,7 +373,7 @@ async function doUpgrade() {
             showMsg("درخواست شما قبلاً ثبت شده و در دست بررسی است.");
         } 
         else if (res.code === 'NOT_FOUND') {
-            showMsg("شماره دانشجویی در لیست اعضا یافت نشد.");
+            showMsg("شماره دانشجویی در لیست اعضا یافت نشد. شما می‌توانید هم اکنون درخواست عضویت دهید.");
         } 
         else {
             showMsg("خطای سیستم: " + (res.code || "Unknown"));
@@ -393,7 +393,7 @@ async function doUpgrade() {
             if(res.name) {
                 document.getElementById('pRes').innerHTML = `<div class="res-card"><b>${res.name}</b><br>امتیاز: ${res.points}</div>`;
             }
-            else showMsg("شماره دانشجویی شما در لیست اعضا یافت نشد. ابتدا باید عضو انجمن شوید.");
+            else showMsg("شماره دانشجویی در لیست اعضا یافت نشد. شما می‌توانید هم اکنون درخواست عضویت دهید.");
         } catch(e) { hideL(); showMsg("خطا در دریافت امتیاز"); }
     }
 
