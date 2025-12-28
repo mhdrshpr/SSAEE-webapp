@@ -20,6 +20,9 @@ SHEET_URL = os.getenv("SHEETBEST_URL")
 
 def get_now():
     return datetime.now().strftime("%Y-%m-%d")
+@app.get("/")
+async def get_index():
+    return FileResponse("index.html")
 
 # --- بخش گواهی ---
 @app.get("/api/cert/{cert_id}")
