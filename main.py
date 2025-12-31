@@ -152,3 +152,28 @@ def association_req(data: dict):
     except Exception as e:
         print(f"System Error: {str(e)}")
         raise HTTPException(status_code=500, detail=str(e))
+
+@app.post("/api/collab/teachers")
+def teacher_req(data: dict):
+    new_id = f"TCH-{random.randint(1000, 9999)}"
+    
+    payload = [{
+        "Name": data.get("Name"),
+        "University": data.get("University"),
+        "AcRank": data.get("AcRank"),
+        "Course": data.get("Course"),
+        "Phone": data.get("Phone"),
+        "ID": new_id,
+        "Date": get_now()
+    }]
+    
+    try:
+        url = f"{SHEET_URL}/tabs/Teachers"
+        res = requests.post(url, json=payload)
+        
+        if res.status_code in [200, 201]:
+            return {"status": "success", "id": new_id}
+        else:
+            return {"status": "error", "message": "Database Error"}
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=str(e))
