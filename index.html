@@ -433,6 +433,19 @@
             <button class="btn-sub" onclick="submitAssociation()">ارسال درخواست</button>
         </div>
     </div>
+    
+    <div id="teacherModal" class="modal" onclick="closeAllM()">
+    <div class="m-content" onclick="event.stopPropagation()">
+        <i class="fa-solid fa-xmark close-btn" onclick="closeAllM()"></i>
+        <h3>فرم همکاری با اساتید</h3>
+        <input id="tc_name" placeholder="نام و نام خانوادگی">
+        <input id="tc_uni" placeholder="دانشگاه / موسسه">
+        <input id="tc_rank" placeholder="مرتبه علمی">
+        <input id="tc_course" placeholder="موضوع تدریس یا همکاری">
+        <input id="tc_phone" type="tel" placeholder="شماره تماس">
+        <button class="btn-sub" onclick="submitTeacher()">ارسال درخواست</button>
+    </div>
+</div>
 
     <div id="colM" class="modal" onclick="closeAllM()">
         <div class="m-content" onclick="event.stopPropagation()">
@@ -600,6 +613,44 @@
                     document.querySelectorAll('#assocModal input').forEach(i => i.value = '');
                 } else showMsg("خطا در ثبت اطلاعات");
             } catch (error) { showMsg("خطا در ارتباط با سرور"); } finally { hideL(); }
+        }
+        function openTeacherModal() { 
+    openM('teacherModal'); 
+}
+
+        async function submitTeacher() {
+            const data = {
+                Name: document.getElementById('tc_name').value,
+                University: document.getElementById('tc_uni').value,
+                AcRank: document.getElementById('tc_rank').value,
+                Course: document.getElementById('tc_course').value,
+                Phone: document.getElementById('tc_phone').value
+        };
+
+            if (!data.Name || !data.Phone) { 
+                showMsg("لطفاً فیلدهای ضروری را پر کنید."); 
+                return; 
+            }
+
+            showL();
+                try {
+                const response = await fetch(`${API}/collab/teachers`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(data)
+                });
+                const result = await response.json();
+                if (response.ok && result.status === "success") {
+                    showMsg(`درخواست ثبت شد.<br>کد پیگیری: <b>${result.id}</b>`);
+                    document.querySelectorAll('#teacherModal input').forEach(i => i.value = '');
+                } else {
+                    showMsg("خطا در ثبت اطلاعات");
+                }
+            } catch (error) {
+                showMsg("خطا در ارتباط با سرور");
+            } finally { 
+                hideL(); 
+            }
         }
     </script>
 </body>
