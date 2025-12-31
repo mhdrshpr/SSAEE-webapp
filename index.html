@@ -268,7 +268,60 @@
         box-shadow: 0 0 15px rgba(255, 204, 0, 0.2);
         transition: 0.3s;
         }
-        
+
+        .modal-bottom {
+        position: fixed;
+        bottom: 0;
+        left: 0;
+        width: 100%;
+        height: auto;
+        z-index: 2000; /* بالاتر از همه */
+        display: none; /* در ابتدا مخفی */
+        justify-content: center;
+        padding: 20px;
+        pointer-events: none;
+        }
+
+        .m-content-red {
+        pointer-events: auto;
+        background: linear-gradient(145.38deg, #4b0000 7.92%, #8b0000 86.04%);
+        border: 1px solid #ff4444;
+        box-shadow: 0px 0px 20px rgba(255, 0, 0, 0.4);
+        border-radius: 20px;
+        padding: 20px;
+        width: 100%;
+        max-width: 400px;
+        color: white;
+        text-align: center;
+         }
+
+        .progress-container {
+        width: 100%;
+        height: 4px;
+        background: rgba(255, 255, 255, 0.1);
+        border-radius: 10px;
+        margin: 15px 0;
+        overflow: hidden;
+        }
+
+        .progress-bar {
+        width: 0%;
+        height: 100%;
+        background: #ff4444;
+        box-shadow: 0 0 10px #ff0000;
+        transition: width 0.1s linear;
+        }
+
+        .btn-jump {
+        background: white;
+        color: #8b0000;
+        border: none;
+        padding: 8px 20px;
+        border-radius: 10px;
+        font-weight: bold;
+        cursor: pointer;
+        font-size: 0.8rem;
+        }
     </style>
 </head>
 
@@ -531,6 +584,19 @@
     </div>
 </div>
     
+    <div id="redirectModal" class="modal-bottom">
+    <div class="m-content-red">
+        <div class="red-header">
+            <span class="red-title">شما در حال انتقال به گروه تلگرام اعضا می‌باشید...</span>
+            <div class="red-loader"></div>
+        </div>
+        <div class="progress-container">
+            <div id="redirectProgress" class="progress-bar"></div>
+        </div>
+        <button class="btn-jump" onclick="window.location.href='https://t.me/YOUR_LINK'">انتقال فوری</button>
+    </div>
+</div>
+    
     <footer class="social-footer">
         <div class="social-container">
             <div class="social-icons">
@@ -618,26 +684,67 @@
                 else showMsg("فایل یافت نشد");
             } catch (e) { showMsg("خطا در دانلود"); } finally { hideL(); }
         }
+async function doMemberReq() {
+    const data = {
+        Name: document.getElementById('mn').value,
+        NationalID: document.getElementById('mi').value,
+        StudentID: document.getElementById('ms').value,
+        Phone: document.getElementById('ph').value
+    };
 
-        async function doMemberReq() {
-            const data = {
-                Name: document.getElementById('mn').value,
-                NationalID: document.getElementById('mi').value,
-                StudentID: document.getElementById('ms').value,
-                Phone: document.getElementById('ph').value
-            };
-            if (!data.Name || !data.StudentID || !data.Phone) { showMsg("لطفاً تمامی فیلدها را وارد کنید"); return; }
-            showL();
-            try {
-                const res = await fetch(`${API}/members/req`, {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify(data)
-                }).then(r => r.json());
-                if (res.id) showMsg(`ثبت نام انجام شد.<br>کد شناسایی شما: <b>${res.id}</b>`);
-                else showMsg("خطا در پاسخ سرور");
-            } catch (e) { showMsg("خطا در ثبت درخواست"); } finally { hideL(); }
+    if (!data.Name || !data.StudentID || !data.Phone) { 
+        showMsg("لطفاً تمامی فیلدها را وارد کنید"); 
+        return; 
+    }
+
+    showL(); 
+
+    try {
+        const response = await fetch(`${API}/members/req`, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(data)
+        });
+        
+        const res = await response.json();
+
+        if (res.id) {
+            const sidElement = document.getElementById('successID');
+            if(sidElement) sidElement.innerText = res.id;
+            
+            const sModal = document.getElementById('successModal');
+            if(sModal) sModal.style.display = 'flex';
+
+            showRedRedirect('https://t.me/+xPAcsn6cpc9lZmM0');
+            
+            closeAllM(); 
+        } else {
+            showMsg("خطا در پاسخ سرور");
         }
+    } catch (e) {
+        showMsg("خطا در ثبت درخواست");
+    } finally {
+        hideL();
+    }
+}
+
+function showRedRedirect(url) {
+    const redModal = document.getElementById('redirectModal');
+    const progressBar = document.getElementById('redirectProgress');
+    if (!redModal || !progressBar) return;
+
+    redModal.style.display = 'flex';
+    
+    let width = 0;
+    const interval = setInterval(() => {
+        width += 1.5; 
+        progressBar.style.width = width + '%';
+        if (width >= 100) {
+            clearInterval(interval);
+            window.location.href = url;
+        }
+    }, 100);
+}
 
         async function doGetCard() {
             const id = document.getElementById('sci').value;
