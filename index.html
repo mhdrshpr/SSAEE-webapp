@@ -273,7 +273,7 @@
     position: fixed;
     bottom: 20px; 
     left: 0;
-    width: 100%;
+    width: 90%;
     display: none;
     justify-content: center;
     align-items: flex-end;
@@ -288,7 +288,7 @@
     box-shadow: 0 0 20px rgba(255, 0, 0, 0.5);
     border-radius: 15px;
     padding: 15px 25px;
-    width: 90%;
+    width: 80%;
     max-width: 400px;
     text-align: center;
     backdrop-filter: blur(10px);
@@ -586,21 +586,21 @@
         <i class="fa-solid fa-xmark close-btn" onclick="closeAllM()"></i>
         <h3>فرم درخواست اسپانسرینگ</h3>
         
-        <input id="sp_brand" placeholder="نام برند یا شرکت/برند">
+        <input id="sp_brand" placeholder="نام برند یا شرکت">
         <input id="sp_interface" placeholder="نام رابط حقیقی">
         
         <select id="sp_type" onchange="toggleSponsorFields()" style="margin-bottom: 10px;">
-            <option value="" disabled selected>نوع حمایت (Type)</option>
+            <option value="" disabled selected>نوع حمایت</option>
             <option value="نقدی">حمایت مالی (نقدی)</option>
             <option value="غیرنقدی">خدمات و تجهیزات (غیرنقدی)</option>
         </select>
 
         <div id="money_div" style="display:none; width: 100%;">
-            <input id="sp_money" type="number" placeholder="مبلغ پیشنهادی به تومان (Money)">
+            <input id="sp_money" type="number" placeholder="مبلغ پیشنهادی به تومان">
         </div>
 
         <div id="details_div" style="display:none; width: 100%;">
-            <textarea id="sp_details" placeholder="شرح خدمات یا تجهیزات (Details)" rows="2"></textarea>
+            <textarea id="sp_details" placeholder="شرح خدمات یا تجهیزات" rows="2"></textarea>
         </div>
 
         <input id="sp_email" type="email" placeholder="ایمیل شرکت ">
@@ -618,7 +618,7 @@
     <div class="m-content-red">
         <div class="red-info">
             <span class="red-dot"></span>
-            <span class="red-text">در حال انتقال به گروه تلگرام اعضا هستید...</span>
+            <span class="red-text">شما در حال انتقال به گروه تلگرام اعضا هستید...</span>
         </div>
         <div class="red-progress-container">
             <div id="redirectProgress" class="red-progress-bar"></div>
