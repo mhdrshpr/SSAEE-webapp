@@ -200,7 +200,9 @@ body {
         <div class="card-title"><i class="fa-solid fa-handshake"></i>همکاری با انجمن ما</div>
 
         <div class="grid">
-            <button class="btn-main" onclick="openCollab('associations')"><i class="fa-solid fa-building-columns"></i>همکاری با انجمن‌ها</button>
+            <button class="btn-main" onclick="openAssocModal()">
+                <i class="fa-solid fa-building-columns"></i>همکاری با انجمن‌ها
+            </button>            
             <button class="btn-main" onclick="openCollab('teachers')"><i class="fa-solid fa-person-chalkboard"></i>همکاری با اساتید</button>
             <button class="btn-main" onclick="openCollab('companies')"><i class="fa-solid fa-industry"></i>همکاری با شرکت‌ها</button>
             <button class="btn-main" onclick="openCollab('suggestions')"><i class="fa-solid fa-comment-dots"></i>پیشنهادات و انتقادات</button>
@@ -292,7 +294,20 @@ body {
         <div id="pRes"></div>
     </div>
 </div>
-
+    
+<div id="assocModal" class="modal" onclick="closeAllM()">
+    <div class="m-content" onclick="event.stopPropagation()">
+        <i class="fa-solid fa-xmark close-btn" onclick="closeAllM()"></i>
+        <h3>فرم همکاری با انجمن‌ها</h3>
+        <input id="as_name" placeholder="نام انجمن">
+        <input id="as_uni" placeholder="دانشگاه">
+        <input id="as_field" placeholder="رشته">
+        <input id="as_course" placeholder="موضوع همکاری">
+        <input id="as_phone" type="tel" placeholder="راه تماس (موبایل)">
+        <button class="btn-sub" onclick="submitAssociation()">ارسال درخواست</button>
+    </div>
+</div>
+    
 <div id="colM" class="modal" onclick="closeAllM()">
     <div class="m-content" id="colB" onclick="event.stopPropagation()"></div>
 </div>
@@ -487,57 +502,47 @@ async function doUpgrade() {
     }
 
     // همکاری
-function openCollab(t) {
-        let h = `<i class="fa-solid fa-xmark close-btn" onclick="closeAllM()"></i>`;
-        if(t==='associations' || t==='teachers') {
-            h += `<input id="f1" placeholder="نام انجمن/استاد"><input id="f2" placeholder="دانشگاه"><input id="f3" placeholder="شماره تماس"><input id="f4" placeholder="رشته">`;
-            if(t==='teachers') h += `<input id="f5" placeholder="مرتبه علمی">`;
-        } else if(t==='companies') {
-            h += `<input id="f1" placeholder="نام شرکت"><input id="f2" placeholder="شماره تماس"><input id="f3" placeholder="رشته"><textarea id="f4" placeholder="توضیحات"></textarea>`;
-        } else if(t==='suggestions' || t==='organize') {
-            h += `<input id="f1" placeholder="${t==='organize'?'نام':'شماره تماس'}"><input id="f2" placeholder="${t==='organize'?'دوره':'موضوع'}"><textarea id="f3" placeholder="توضیحات/شماره تماس"></textarea>`;
-        }
-        h += `<button class="btn-sub" onclick="sendCol('${t}')">ارسال</button>`;
-        document.getElementById('colB').innerHTML = h; openM('colM');
+function openAssocModal() {
+    openM('assocModal');
+}
+
+async function submitAssociation() {
+    const data = {
+        Name: document.getElementById('as_name').value,
+        University: document.getElementById('as_uni').value,
+        Field: document.getElementById('as_field').value,
+        Course: document.getElementById('as_course').value,
+        Phone: document.getElementById('as_phone').value
+    };
+
+    if(!data.Name || !data.University || !data.Phone) {
+        showMsg("لطفا تمامی فیلد‌ها را پر کنید.");
+        return;
     }
 
-    async function sendCol(t) {
-        let d = {};
-        const f1 = document.getElementById('f1');
-        const f2 = document.getElementById('f2');
-        const f3 = document.getElementById('f3');
-        const f4 = document.getElementById('f4');
-        const f5 = document.getElementById('f5');
-
-        if(t==='associations' || t==='teachers') d = { Name:f1.value, University:f2.value, Call:f3.value, Field:f4.value };
-        if(t==='teachers') d.AcRank = f5.value;
-        if(t==='companies') d = { Name:f1.value, Call:f2.value, Field:f3.value, Note:f4.value };
-        if(t==='suggestions') d = { Call:f1.value, Subject:f2.value, Note:f3.value };
-        if(t==='organize') d = { Name:f1.value, Course:f2.value, Call:f3.value };
-        if(t==='class') d = { Name:f1.value, Course:f2.value, Call:f3.value };
+    showL();
+    try {
+        const response = await fetch(`${API}/api/collab/associations`, {
+            method: 'POST',
+            headers: {'Content-Type': 'application/json'},
+            body: JSON.stringify(data)
+        });
         
-        if(!d.Name && !d.Call) { showMsg("لطفاً تمام فیلدها را پر کنید"); return; }
+        const result = await response.json();
+        hideL();
 
-        showL();
-        try {
-            const res = await fetch(`${API}/api/collab/${t}`, { 
-                method: 'POST', 
-                headers: {'Content-Type': 'application/json'}, 
-                body: JSON.stringify(d) 
-            }).then(r => r.json());
-
-            hideL();
-            if(res.status === "success") {
-            showMsg(`درخواست شما با موفقیت ثبت شد.<br>کد پیگیری: <b>${res.id}</b>`);
-                closeAllM();
-            } else {
-                showMsg("خطا در ثبت درخواست");
-            }
-        } catch(e) {
-            hideL();
-            showMsg("خطا در ارتباط با سرور");
+        if(response.ok && result.status === "success") {
+            showMsg(`درخواست ثبت شد.<br>کد پیگیری: <b>${result.id}</b>`);
+            closeAllM();
+            document.querySelectorAll('#assocModal input').forEach(i => i.value = '');
+        } else {
+            showMsg("خطا در ثبت اطلاعات");
         }
+    } catch (error) {
+        hideL();
+        showMsg("خطا در ارتباط با سرور");
     }
+}
 
 </script>
 </body>
