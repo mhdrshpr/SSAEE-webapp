@@ -194,24 +194,32 @@ body {
             <button class="btn-main" onclick="openM('mPointM')"><i class="fa-solid fa-star"></i>مشاهده امتیاز</button>
         </div>
     </div>
-
-    <div class="card">
-        <div class="card-title"><i class="fa-solid fa-handshake"></i>همکاری با انجمن ما</div>
-        <div class="grid">
-            <button class="btn-main" onclick="openCollab('associations')"><i class="fa-solid fa-building-columns"></i>همکاری با انجمن‌ها</button>
-            <button class="btn-main" onclick="openCollab('teachers')"><i class="fa-solid fa-person-chalkboard"></i>همکاری با اساتیده</button>
-            <button class="btn-main" onclick="openCollab('companies')"><i class="fa-solid fa-industry"></i>همکاری با شرکت‌ها</button>
-            <button class="btn-main" onclick="openCollab('suggestions')"><i class="fa-solid fa-comment-dots"></i>پیشنهادات و انتقادات</button>
-        </div>
+    
+<div class="card">
+    <div class="card-title"><i class="fa-solid fa-handshake"></i>همکاری با انجمن ما</div>
+    <div class="grid">
+        <button class="btn-main" onclick="openCollab('associations')"><i class="fa-solid fa-building-columns"></i>همکاری با انجمن‌ها</button>
+        <button class="btn-main" onclick="openCollab('teachers')"><i class="fa-solid fa-person-chalkboard"></i>همکاری با اساتید</button>
+        <button class="btn-main" onclick="openCollab('companies')"><i class="fa-solid fa-industry"></i>همکاری با شرکت‌ها</button>
+        <button class="btn-main" onclick="openCollab('suggestions')"><i class="fa-solid fa-comment-dots"></i>پیشنهادات و انتقادات</button>
     </div>
+</div>
 
-    <div class="card">
-        <div class="card-title"><i class="fa-solid fa-chalkboard-user"></i>کارگاه و رویداد</div>
-        <div class="grid">
+<div class="card">
+    <div class="card-title"><i class="fa-solid fa-chalkboard-user"></i>کارگاه و رویداد</div>
+    <div class="grid">
         <button class="btn-main" onclick="openCollab('organize')"><i class="fa-solid fa-calendar-day"></i>درخواست برگزاری کارگاه</button>
-        <button class="btn-main" onclick="openCollab('organize')"><i class="fa-solid fa-calendar-plus"></i>درخواست برگزاری حل تمرین</button>
-        </div>
+        <button class="btn-main" onclick="openCollab('classreq')"><i class="fa-solid fa-calendar-plus"></i>درخواست برگزاری حل تمرین</button>
     </div>
+</div>
+
+<div id="colM" class="modal" onclick="closeAllM()">
+    <div class="m-content" onclick="event.stopPropagation()">
+        <div id="colB">
+            </div>
+    </div>
+</div>
+    
     <div style="text-align: center; margin: 25px 0 15px 0;">
     <button onclick="window.location.href='https://t.me/mh2pr'" style="background: #1a1a1a; border: 1px solid #333; color: #fff; padding: 8px 12px; border-radius: 12px; cursor: pointer;  font-family: 'Vazirmatn';  font-size: 12px; align-items: center; gap: 6px;" class="btn-top">
             <i class="fa-solid fa-bug"></i>  گزارش باگ و خطا در پنل
@@ -224,7 +232,8 @@ body {
 <div id="certM" class="modal" onclick="closeAllM()">
     <div class="m-content" onclick="event.stopPropagation()">
         <i class="fa-solid fa-xmark close-btn" onclick="closeAllM()"></i>
-        <input type="text" id="cInp" placeholder="شناسه گواهی">
+        <h3><i class="fa-solid fa-search">   استعلام اعتبار گواهی‌نامه</h3>
+        <input type="text" id="cInp" placeholder="شناسه گواهی(اعداد انگلیسی وارد کنید.)">
         <button class="btn-sub" onclick="doCert()">بررسی</button>
         <div id="cRes"></div>
     </div>
@@ -233,7 +242,8 @@ body {
 <div id="downM" class="modal" onclick="closeAllM()">
     <div class="m-content" onclick="event.stopPropagation()">
         <i class="fa-solid fa-xmark close-btn" onclick="closeAllM()"></i>
-        <input type="text" id="dInp" placeholder="شناسه گواهی">
+        <h3><i class="fa-solid fa-download">   دانلود گواهی‌نامه</h3>
+        <input type="text" id="dInp" placeholder="شناسه گواهی(اعداد انگلیسی وارد کنید.)">
         <button class="btn-sub" onclick="doDownload()">دانلود</button>
     </div>
 </div>
@@ -241,7 +251,7 @@ body {
 <div id="mReqM" class="modal" onclick="closeAllM()">
     <div class="m-content" onclick="event.stopPropagation()">
         <i class="fa-solid fa-xmark close-btn" onclick="closeAllM()"></i>
-        <h3>فرم درخواست عضویت در انجمن</h3>
+        <h3><i class="fa-solid fa-user-plus">   فرم درخواست عضویت در انجمن</h3>
         <input id="mn" placeholder="نام کامل">
         <input id="mi" placeholder="کد ملی">
         <input id="ms" placeholder="کد دانشجویی">
@@ -251,13 +261,29 @@ body {
     </div>
 </div>
 
-<div id="mCardM" class="modal" onclick="closeAllM()"><div class="m-content" onclick="event.stopPropagation()"><i class="fa-solid fa-xmark close-btn" onclick="closeAllM()"></i><input id="sci" placeholder="کد دانشجویی"><button class="btn-sub" onclick="doGetCard()">دریافت فایل کارت</button></div></div>
-<div id="mUpM" class="modal" onclick="closeAllM()"><div class="m-content" onclick="event.stopPropagation()"><i class="fa-solid fa-xmark close-btn" onclick="closeAllM()"></i><input id="sui" placeholder="کد دانشجویی"><button class="btn-sub" onclick="doUpgrade()">درخواست ارتقا</button></div></div>
+<div id="mCardM" class="modal" onclick="closeAllM()">
+    <div class="m-content" onclick="event.stopPropagation()">
+        <i class="fa-solid fa-xmark close-btn" onclick="closeAllM()"></i>
+        <h3><i class="fa-solid fa-id-card">   دانلود کارت عضویت اعضا</h3>
+        <input id="sci" placeholder="(اعداد انگلیسی وارد کنید.)کد دانشجویی">
+        <button class="btn-sub" onclick="doGetCard()">دریافت فایل کارت</button>
+    </div>
+</div>
+    
+<div id="mUpM" class="modal" onclick="closeAllM()">
+    <div class="m-content" onclick="event.stopPropagation()">
+        <i class="fa-solid fa-xmark close-btn" onclick="closeAllM()"></i>
+        <h3><i class="fa-solid fa-angles-up">   درخواست ارتقا به عضو فعال</h3>
+        <input id="sui" placeholder="(اعداد انگلیسی وارد کنید.)کد دانشجویی">
+        <button class="btn-sub" onclick="doUpgrade()">درخواست ارتقا</button>
+    </div>
+</div>
+    
 <div id="mPointM" class="modal" onclick="closeAllM()">
     <div class="m-content" onclick="event.stopPropagation()">
         <i class="fa-solid fa-xmark close-btn" onclick="closeAllM()">
-            
-        </i><input id="spi" placeholder="کد دانشجویی">
+        <h3><i class="fa-solid fa-star">   مشاهده امتیاز اعضا</h3>            
+        </i><input id="spi" placeholder="(اعداد انگلیسی وارد کنید.)کد دانشجویی">
         <button class="btn-sub" onclick="doGetPoints()">مشاهده امتیاز</button>
         <p style="font-size: 11px; color: #888; text-align: center; margin-top: 10px; margin-bottom: 5px;">
             امتیازات به صورت ماهانه و در ابتدای ماه بروزرسانی می‌شوند.
@@ -294,7 +320,7 @@ body {
         </div>
         <div class="social-text">شبکه‌های اجتماعی انجمن علمی برق</div>
     </div>
-    <div class="dev-credit">V2 Beta - Developed by <b>Mahdyar Shahpari X Gemini AI</b></div>
+    <div class="dev-credit">V2.1 Beta - Developed by <b>Mahdyar Shahpari</b></div>
 </footer>
 
 <script>
@@ -460,44 +486,63 @@ async function doUpgrade() {
     }
 
     // همکاری
-    function openCollab(t) {
-        let h = `<i class="fa-solid fa-xmark close-btn" onclick="closeAllM()"></i>`;
-        if(t==='associations' || t==='teachers') {
-            h += `<input id="f1" placeholder="نام انجمن/استاد"><input id="f2" placeholder="دانشگاه"><input id="f3" placeholder="شماره تماس"><input id="f4" placeholder="رشته">`;
-            if(t==='teachers') h += `<input id="f5" placeholder="مرتبه علمی">`;
-        } else if(t==='companies') {
-            h += `<input id="f1" placeholder="نام شرکت"><input id="f2" placeholder="شماره تماس"><input id="f3" placeholder="رشته"><textarea id="f4" placeholder="توضیحات"></textarea>`;
-        } else if(t==='suggestions' || t==='organize') {
-            h += `<input id="f1" placeholder="${t==='organize'?'نام':'شماره تماس'}"><input id="f2" placeholder="${t==='organize'?'دوره':'موضوع'}"><textarea id="f3" placeholder="توضیحات/شماره تماس"></textarea>`;
+function openCollab(type) {
+    let html = `<i class="fa-solid fa-xmark close-btn" onclick="closeAllM()"></i>`;
+    
+    const fields = {
+        'associations': ['نام انجمن', 'دانشگاه', 'شماره تماس', 'رشته'],
+        'teachers': ['نام استاد', 'دانشگاه', 'شماره تماس', 'رشته', 'مرتبه علمی'],
+        'companies': ['نام شرکت', 'شماره تماس', 'رشته', 'توضیحات (Textarea)'],
+        'suggestions': ['شماره تماس', 'موضوع', 'متن (Textarea)'],
+        'organize': ['نام و نام خانوادگی', 'عنوان کارگاه', 'شماره تماس'],
+        'classreq': ['نام و نام خانوادگی', 'نام کلاس/دوره', 'شماره تماس']
+    };
+
+    const currentFields = fields[type];
+    currentFields.forEach((label, index) => {
+        if (label.includes('Textarea')) {
+            html += `<textarea id="f${index+1}" placeholder="${label.replace(' (Textarea)', '')}"></textarea>`;
+        } else {
+            html += `<input id="f${index+1}" placeholder="${label}">`;
         }
-        h += `<button class="btn-sub" onclick="sendCol('${t}')">ارسال</button>`;
-        document.getElementById('colB').innerHTML = h; openM('colM');
+    });
+
+    html += `<button class="btn-sub" onclick="sendCollabData('${type}')">ارسال درخواست</button>`;
+    document.getElementById('colB').innerHTML = html;
+    openM('colM');
+}
+
+async function sendCollabData(type) {
+    const data = { type: type };
+    for (let i = 1; i <= 5; i++) {
+        const el = document.getElementById(`f${i}`);
+        if (el) data[`field${i}`] = el.value;
     }
 
-    async function sendCol(t) {
-        let d = {};
-        const f1 = document.getElementById('f1');
-        const f2 = document.getElementById('f2');
-        const f3 = document.getElementById('f3');
-        const f4 = document.getElementById('f4');
-        const f5 = document.getElementById('f5');
-
-        if(t==='associations' || t==='teachers') d = { Name:f1.value, University:f2.value, Call:f3.value, Field:f4.value };
-        if(t==='teachers') d.AcRank = f5.value;
-        if(t==='companies') d = { Name:f1.value, Call:f2.value, Field:f3.value, Note:f4.value };
-        if(t==='suggestions') d = { Call:f1.value, Subject:f2.value, Note:f3.value };
-        if(t==='organize') d = { Name:f1.value, Course:f2.value, Call:f3.value };
-
-        showL();
-        try {
-            const res = await fetch(`${API}/submit/${t}`, { method:'POST', headers:{'Content-Type':'application/json'}, body:JSON.stringify(d) }).then(r=>r.json());
-            hideL(); 
-            showMsg(`درخواست ثبت شد.<br>کد پیگیری: <b>${res.id}</b>`);
-        } catch(e) {
-            hideL();
-            showMsg("خطا در ارسال درخواست");
-        }
+    if (!data.field1 || !data.field2 || !data.field3) {
+        showMsg("لطفاً فیلدهای ضروری را پر کنید");
+        return;
     }
+
+    showL(); 
+    try {
+        const response = await fetch(`${API}/collab/submit`, {
+            method: 'POST',
+            headers: {'Content-Type': 'application/json'},
+            body: JSON.stringify(data)
+        });
+        const result = await response.json();
+        hideL();
+        if (result.status === "success") {
+            showMsg("درخواست شما با موفقیت ثبت شد");
+            closeAllM();
+        }
+    } catch (error) {
+        hideL();
+        showMsg("خطا در ارسال اطلاعات");
+    }
+}
+ 
 </script>
 </body>
 </html>
