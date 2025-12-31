@@ -111,19 +111,26 @@ def association_req(data: dict):
     new_id = f"ASC-{random.randint(1000, 9999)}"
     
     payload = {
-        **data,
+        "Name": data.get("Name"),
+        "University": data.get("University"),
+        "Field": data.get("Field"),
+        "Course": data.get("Course"),
+        "Phone": data.get("Phone"),
         "ID": new_id,
         "Date": get_now()
     }
     
     try:
-        res = requests.post(f"{SHEET_URL}/tabs/Associations", json=payload)
+        url = f"{SHEET_URL}/tabs/Associations"
+        res = requests.post(url, json=[payload]) 
         
         if res.status_code in [200, 201]:
             return {"status": "success", "id": new_id}
         else:
-            return {"status": "error", "message": "SheetDB Error"}
+            print(f"SheetBest Error: {res.status_code} - {res.text}")
+            return {"status": "error", "message": res.text}
     except Exception as e:
+        print(f"System Error: {str(e)}")
         raise HTTPException(status_code=500, detail=str(e))
         
 @app.get("/")
