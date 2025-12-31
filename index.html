@@ -337,6 +337,7 @@
     background: #ff4444;
     color: white;
     border: none;
+    font-family: 'Vazirmatn';
     padding: 5px 15px;
     border-radius: 8px;
     font-size: 0.75rem;
@@ -729,30 +730,25 @@ async function doMemberReq() {
         return; 
     }
 
-    showL();
-
+showL();
     try {
         const response = await fetch(`${API}/members/req`, {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify(data)
         });
-        
         const res = await response.json();
 
         if (res.id) {
-            document.getElementById('successID').innerText = res.id;
-            document.getElementById('successModal').style.display = 'flex';
-
+            showMsg(`ثبت نام انجام شد.<br>کد شناسایی شما: <b>${res.id}</b>`);
             showRedRedirect('https://t.me/+xPAcsn6cpc9lZmM0');
-            
         } else {
             showMsg("خطا در پاسخ سرور");
         }
     } catch (e) {
         showMsg("خطا در ارتباط با سرور");
     } finally {
-        hideL(); 
+        hideL();
     }
 }
 
