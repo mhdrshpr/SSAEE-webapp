@@ -105,33 +105,26 @@ def get_points(sid: str):
     return {"name": res[0].get("NameFa"), "points": res[0].get("Points")}
 
 # --- بخش همکاری و کارگاه ---
-@app.post("/api/collab/{t}")
-async def submit_collab(t: str, data: dict):
-    tabs = {
-        "associations": "Associations",
-        "teachers": "Teachers",
-        "companies": "Companies",
-        "suggestions": "Suggestions",
-        "organize": "OrganizeReq",
-        "class": "ClassReq"
+
+@app.post("/api/collab/associations")
+def association_req(data: dict):
+    new_id = f"ASC-{random.randint(1000, 9999)}"
+    
+    payload = {
+        **data,
+        "ID": new_id,
+        "Date": get_now()
     }
     
-    target_tab = tabs.get(t)
-    if not target_tab:
-        return {"status": "error", "message": "تب مورد نظر یافت نشد"}
-
-    new_id = f"COL-{random.randint(1000, 9999)}"
-    
-    payload = {**data, "ID": new_id, "Date": get_now()}
-    
     try:
-        res = requests.post(f"{SHEET_URL}/tabs/{target_tab}", json=payload)
+        res = requests.post(f"{SHEET_URL}/tabs/Associations", json=payload)
+        
         if res.status_code in [200, 201]:
             return {"status": "success", "id": new_id}
         else:
-            return {"status": "error", "message": "خطا در ثبت اطلاعات"}
+            return {"status": "error", "message": "SheetDB Error"}
     except Exception as e:
-        return {"status": "error", "message": str(e)}
+        raise HTTPException(status_code=500, detail=str(e))
         
 @app.get("/")
 async def serve_index(): return FileResponse("index.html")
