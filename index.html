@@ -350,10 +350,14 @@
         </div>
 
         <div class="card">
-            <div class="card-title"><i class="fa-solid fa-chalkboard-user"></i>کارگاه و رویداد</div>
+            <div class="card-title"><i class="fa-solid fa-chalkboard-user"></i>کارگاه، رویداد و کلاس</div>
             <div class="grid">
-                <button class="btn-main" onclick="openCollab('organize')"><i class="fa-solid fa-calendar-day"></i>درخواست برگزاری کارگاه</button>
-                <button class="btn-main" onclick="openCollab('class')"><i class="fa-solid fa-calendar-plus"></i>درخواست برگزاری حل تمرین</button>
+                <button class="btn-main" onclick="openWorkshopModal()">
+                    <i class="fa-solid fa-chalkboard-user"></i>درخواست برگزاری کارگاه
+                </button>
+            <button class="btn-main" onclick="openClassModal()">
+                    <i class="fa-solid fa-calendar-plus"></i>درخواست برگزاری حل تمرین
+            </button>
             </div>
         </div>
 
@@ -463,6 +467,31 @@
         <button class="btn-sub" onclick="submitCompany()">ارسال درخواست</button>
     </div>
 </div>
+
+<div id="workshopModal" class="modal" onclick="closeAllM()">
+    <div class="m-content" onclick="event.stopPropagation()">
+        <i class="fa-solid fa-xmark close-btn" onclick="closeAllM()"></i>
+        <h3>درخواست برگزاری کارگاه</h3>
+        <input id="ws_course" placeholder="عنوان کارگاه درخواستی (اجباری)">
+        <input id="ws_phone" placeholder="آیدی تلگرام یا شماره تماس (اجباری)">
+        <input id="ws_teacher" placeholder="استاد پیشنهادی (اختیاری)">
+        <input id="ws_time" placeholder="زمان پیشنهادی برای برگزاری (اختیاری)">
+        <button class="btn-sub" onclick="submitWorkshop()">ارسال درخواست</button>
+    </div>
+</div>
+
+    <div id="classModal" class="modal" onclick="closeAllM()">
+    <div class="m-content" onclick="event.stopPropagation()">
+        <i class="fa-solid fa-xmark close-btn" onclick="closeAllM()"></i>
+        <h3>درخواست برگزاری کلاس حل تمرین</h3>
+        <input id="cl_course" placeholder="نام درس برای حل تمرین (اجباری)">
+        <input id="cl_phone" placeholder="آیدی تلگرام یا شماره تماس (اجباری)">
+        <input id="cl_teacher" placeholder="استاد/مدرس پیشنهادی (اختیاری)">
+        <input id="cl_time" placeholder="زمان پیشنهادی (اختیاری)">
+        <button class="btn-sub" onclick="submitClass()">ارسال درخواست</button>
+    </div>
+</div>
+
     <div id="feedbackModal" class="modal" onclick="closeAllM()">
     <div class="m-content" onclick="event.stopPropagation()">
         <i class="fa-solid fa-xmark close-btn" onclick="closeAllM()"></i>
@@ -756,6 +785,81 @@ async function submitFeedback() {
             showMsg(`پیام شما با موفقیت ثبت شد.<br>کد پیگیری: <b>${result.id}</b>`);
             document.querySelectorAll('#feedbackModal input, #feedbackModal textarea').forEach(i => i.value = '');
             document.getElementById('fb_unit').value = "";
+        } else {
+            showMsg("خطا در ثبت اطلاعات");
+        }
+    } catch (error) {
+        showMsg("خطا در ارتباط با سرور");
+    } finally {
+        hideL();
+    }
+}
+function openWorkshopModal() {
+    openM('workshopModal');
+}
+
+async function submitWorkshop() {
+    const data = {
+        Course: document.getElementById('ws_course').value,
+        Phone: document.getElementById('ws_phone').value,
+        Teacher: document.getElementById('ws_teacher').value,
+        Time: document.getElementById('ws_time').value
+    };
+
+    if (!data.Course || !data.Phone) {
+        showMsg("لطفاً عنوان کارگاه و راه ارتباطی را وارد کنید.");
+        return;
+    }
+
+    showL();
+    try {
+        const response = await fetch(`${API}/workshop/req`, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(data)
+        });
+        const result = await response.json();
+        if (response.ok && result.status === "success") {
+            showMsg(`درخواست کارگاه ثبت شد.<br>کد پیگیری: <b>${result.id}</b>`);
+            document.querySelectorAll('#workshopModal input').forEach(i => i.value = '');
+        } else {
+            showMsg("خطا در ثبت اطلاعات");
+        }
+    } catch (error) {
+        showMsg("خطا در ارتباط با سرور");
+    } finally {
+        hideL();
+    }
+}
+
+function openClassModal() {
+    openM('classModal');
+}
+
+async function submitClass() {
+    const data = {
+        Course: document.getElementById('cl_course').value,
+        Phone: document.getElementById('cl_phone').value,
+        Teacher: document.getElementById('cl_teacher').value,
+        Time: document.getElementById('cl_time').value
+    };
+
+    if (!data.Course || !data.Phone) {
+        showMsg("لطفاً نام درس و راه ارتباطی را وارد کنید.");
+        return;
+    }
+
+    showL();
+    try {
+        const response = await fetch(`${API}/class/req`, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(data)
+        });
+        const result = await response.json();
+        if (response.ok && result.status === "success") {
+            showMsg(`درخواست کلاس حل تمرین ثبت شد.<br>کد پیگیری: <b>${result.id}</b>`);
+            document.querySelectorAll('#classModal input').forEach(i => i.value = '');
         } else {
             showMsg("خطا در ثبت اطلاعات");
         }
