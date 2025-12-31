@@ -755,10 +755,12 @@ showL();
 function showRedRedirect(url) {
     const redModal = document.getElementById('redirectModal');
     const progressBar = document.getElementById('redirectProgress');
+    if (!redModal || !progressBar) return;
+
     redModal.style.display = 'flex';
     
     let width = 0;
-    const durationInSeconds = 15; 
+    const durationInSeconds = 15;
     const step = 100 / (durationInSeconds * 10); 
 
     const interval = setInterval(() => {
@@ -767,6 +769,10 @@ function showRedRedirect(url) {
         
         if (width >= 100) {
             clearInterval(interval);
+            redModal.style.display = 'none';  
+            if (typeof closeAllM === "function") {
+                closeAllM();
+            }
             window.location.href = url;
         }
     }, 100);
