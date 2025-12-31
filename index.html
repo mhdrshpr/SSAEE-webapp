@@ -340,8 +340,12 @@
                     <i class="fa-solid fa-building-columns"></i>همکاری با انجمن‌ها</button>
                 <button class="btn-main" onclick="openTeacherModal()">
                     <i class="fa-solid fa-person-chalkboard"></i>همکاری با اساتید</button>
-                <button class="btn-main" onclick="openCollab('companies')"><i class="fa-solid fa-industry"></i>همکاری با شرکت‌ها</button>
-                <button class="btn-main" onclick="openCollab('suggestions')"><i class="fa-solid fa-comment-dots"></i>پیشنهادات و انتقادات</button>
+                <button class="btn-main" onclick="openCompanyModal()">
+                    <i class="fa-solid fa-industry"></i>همکاری با شرکت‌ها
+                </button>
+                <button class="btn-main" onclick="openFeedbackModal()">
+                    <i class="fa-solid fa-comments"></i>پیشنهادات و انتقادات
+                </button>
             </div>
         </div>
 
@@ -446,6 +450,39 @@
         <input id="tc_course" placeholder="موضوع تدریس یا همکاری">
         <input id="tc_phone" type="tel" placeholder="شماره تماس">
         <button class="btn-sub" onclick="submitTeacher()">ارسال درخواست</button>
+    </div>
+</div>
+
+<div id="companyModal" class="modal" onclick="closeAllM()">
+    <div class="m-content" onclick="event.stopPropagation()">
+        <i class="fa-solid fa-xmark close-btn" onclick="closeAllM()"></i>
+        <h3>فرم همکاری با شرکت‌ها</h3>
+        <input id="co_name" placeholder="نام شرکت / مجموعه">
+        <input id="co_phone" type="tel" placeholder="شماره تماس">
+        <textarea id="co_note" placeholder="توضیحات همکاری" rows="4" style="width: 100%; background: #000; border: 1px solid #222; color: #fff; padding: 12px; margin: 8px 0; border-radius: 12px; font-family: 'Vazirmatn'; text-align: right; box-sizing: border-box; resize: none;"></textarea>
+        <button class="btn-sub" onclick="submitCompany()">ارسال درخواست</button>
+    </div>
+</div>
+    <div id="feedbackModal" class="modal" onclick="closeAllM()">
+    <div class="m-content" onclick="event.stopPropagation()">
+        <i class="fa-solid fa-xmark close-btn" onclick="closeAllM()"></i>
+        <h3>پیشنهادات و انتقادات</h3>
+        <input id="fb_subject" placeholder="موضوع">
+        
+        <select id="fb_unit" style="width: 100%; background: #000; border: 1px solid #222; color: #fff; padding: 12px; margin: 8px 0; border-radius: 12px; font-family: 'Vazirmatn'; text-align: right; box-sizing: border-box; cursor: pointer;">
+            <option value="" disabled selected>انتخاب واحد مربوطه</option>
+            <option value="واحد مدیریت">واحد مدیریت</option>
+            <option value="واحد اعضا">واحد اعضا</option>
+            <option value="واحد کارگاه‌ها">واحد کارگاه‌ها</option>
+            <option value="واحد روابط عمومی">واحد روابط عمومی</option>
+            <option value="واحد فنی">واحد فنی</option>
+            <option value="تیم رباتیک">تیم رباتیک</option>
+        </select>
+
+        <input id="fb_phone" type="tel" placeholder="شماره تماس (اختیاری)">
+        <textarea id="fb_note" placeholder="شرح پیشنهاد یا انتقاد" rows="4" style="width: 100%; background: #000; border: 1px solid #222; color: #fff; padding: 12px; margin: 8px 0; border-radius: 12px; font-family: 'Vazirmatn'; text-align: right; box-sizing: border-box; resize: none;"></textarea>
+        
+        <button class="btn-sub" onclick="submitFeedback()">ارسال پیام</button>
     </div>
 </div>
 
@@ -590,7 +627,7 @@
             } catch (e) { showMsg("خطا در دریافت امتیاز"); } finally { hideL(); }
         }
 
-        // --- همکاری ---
+// --- همکاری ---
         function openAssocModal() { openM('assocModal'); }
 
         async function submitAssociation() {
@@ -654,6 +691,80 @@
                 hideL(); 
             }
         }
+        function openCompanyModal() {
+            openM('companyModal');
+        }
+
+        async function submitCompany() {
+            const data = {
+                Name: document.getElementById('co_name').value,
+                Phone: document.getElementById('co_phone').value,
+                Note: document.getElementById('co_note').value
+            };
+
+            if (!data.Name || !data.Phone) {
+                showMsg("لطفاً نام شرکت و شماره تماس را وارد کنید.");
+                return;
+            }
+
+            showL();
+            try {
+                const response = await fetch(`${API}/collab/companies`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(data)
+                });
+                const result = await response.json();
+                if (response.ok && result.status === "success") {
+                    showMsg(`درخواست همکاری ثبت شد.<br>کد پیگیری: <b>${result.id}</b>`);
+                    document.querySelectorAll('#companyModal input, #companyModal textarea').forEach(i => i.value = '');
+                } else {
+                    showMsg("خطا در ثبت اطلاعات");
+                }
+            } catch (error) {
+                showMsg("خطا در ارتباط با سرور");
+            } finally {
+                hideL();
+            }
+        }
+        function openFeedbackModal() {
+    openM('feedbackModal');
+}
+
+async function submitFeedback() {
+    const data = {
+        Subject: document.getElementById('fb_subject').value,
+        Unit: document.getElementById('fb_unit').value,
+        Phone: document.getElementById('fb_phone').value,
+        Note: document.getElementById('fb_note').value
+    };
+
+    if (!data.Subject || !data.Unit || !data.Note) {
+        showMsg("لطفاً موضوع، واحد و متن پیام را وارد کنید.");
+        return;
+    }
+
+    showL();
+    try {
+        const response = await fetch(`${API}/feedback`, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(data)
+        });
+        const result = await response.json();
+        if (response.ok && result.status === "success") {
+            showMsg(`پیام شما با موفقیت ثبت شد.<br>کد پیگیری: <b>${result.id}</b>`);
+            document.querySelectorAll('#feedbackModal input, #feedbackModal textarea').forEach(i => i.value = '');
+            document.getElementById('fb_unit').value = "";
+        } else {
+            showMsg("خطا در ثبت اطلاعات");
+        }
+    } catch (error) {
+        showMsg("خطا در ارتباط با سرور");
+    } finally {
+        hideL();
+    }
+}
     </script>
 </body>
 </html>
