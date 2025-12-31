@@ -275,7 +275,7 @@ body {
     <div class="m-content" onclick="event.stopPropagation()">
         <i class="fa-solid fa-xmark close-btn" onclick="closeAllM()"></i>
         <h3>درخواست ارتقا به عضو فعال و تمدید عضویت</h3>
-        <input id="sui" placeholder="(اعداد انگلیسی وارد کنید.)کد دانشجویی">
+        <input id="sui" placeholder="کد دانشجویی(اعداد انگلیسی وارد کنید.)">
         <button class="btn-sub" onclick="doUpgrade()">درخواست ارتقا</button>
     </div>
 </div>
@@ -284,7 +284,7 @@ body {
     <div class="m-content" onclick="event.stopPropagation()">
         <i class="fa-solid fa-xmark close-btn" onclick="closeAllM()">
         <h3>مشاهده امتیاز اعضا</h3>            
-        </i><input id="spi" placeholder="(اعداد انگلیسی وارد کنید.)کد دانشجویی">
+        <input id="spi" placeholder="کد دانشجویی(اعداد انگلیسی وارد کنید.)">
         <button class="btn-sub" onclick="doGetPoints()">مشاهده امتیاز</button>
         <p style="font-size: 11px; color: #888; text-align: center; margin-top: 10px; margin-bottom: 5px;">
             امتیازات به صورت ماهانه و در ابتدای ماه بروزرسانی می‌شوند.
@@ -514,7 +514,30 @@ function openCollab(t) {
         if(t==='companies') d = { Name:f1.value, Call:f2.value, Field:f3.value, Note:f4.value };
         if(t==='suggestions') d = { Call:f1.value, Subject:f2.value, Note:f3.value };
         if(t==='organize') d = { Name:f1.value, Course:f2.value, Call:f3.value };
-        if(t==='class') d = { Name:f1.value, Course:f2.value, Call:f3.value }; 
+        if(t==='class') d = { Name:f1.value, Course:f2.value, Call:f3.value };
+        
+        if(!d.Name && !d.Call) { showMsg("لطفاً تمام فیلدها را پر کنید"); return; }
+
+        showL();
+        try {
+            const res = await fetch(`${API}/api/collab/${t}`, { 
+                method: 'POST', 
+                headers: {'Content-Type': 'application/json'}, 
+                body: JSON.stringify(d) 
+            }).then(r => r.json());
+
+            hideL();
+            if(res.status === "success") {
+            showMsg(`درخواست شما با موفقیت ثبت شد.<br>کد پیگیری: <b>${res.id}</b>`);
+                closeAllM();
+            } else {
+                showMsg("خطا در ثبت درخواست");
+            }
+        } catch(e) {
+            hideL();
+            showMsg("خطا در ارتباط با سرور");
+        }
+    }
 
 </script>
 </body>
