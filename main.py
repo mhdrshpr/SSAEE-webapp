@@ -56,9 +56,7 @@ def download_cert(cert_id: str):
 @app.post("/api/members/req")
 def member_req(data: dict):
     new_id = f"MEM-{random.randint(1000, 9999)}"
-    
     payload = {**data, "ID": new_id, "Date": get_now()}
-    
     response = requests.post(f"{SHEET_URL}/tabs/MembersReq", json=payload)
     
     if response.status_code == 201 or response.status_code == 200:
@@ -107,42 +105,33 @@ def get_points(sid: str):
     return {"name": res[0].get("NameFa"), "points": res[0].get("Points")}
 
 # --- بخش همکاری و کارگاه ---
-@app.post("/api/collab/submit")
-async def submit_collab(data: dict):
-    form_type = data.get("type")
-    
-    tab_mapping = {
+@app.post("/api/collab/{t}")
+async def submit_collab(t: str, data: dict):
+    tabs = {
         "associations": "Associations",
         "teachers": "Teachers",
         "companies": "Companies",
         "suggestions": "Suggestions",
         "organize": "OrganizeReq",
-        "classreq": "ClassReq"
+        "class": "ClassReq"
     }
     
-    target_tab = tab_mapping.get(form_type)
+    target_tab = tabs.get(t)
     if not target_tab:
-        raise HTTPException(status_code=400, detail="Invalid form type")
+        return {"status": "error", "message": "تب مورد نظر یافت نشد"}
 
-    payload = {"date": datetime.now().strftime("%Y-%m-%d %H:%M:%S")}
+    new_id = f"COL-{random.randint(1000, 9999)}"
     
-    if form_type in ["associations", "teachers"]:
-        payload.update({"name": data.get("field1"), "uni": data.get("field2"), "phone": data.get("field3"), "field": data.get("field4")})
-        if form_type == "teachers": payload["rank"] = data.get("field5")
-    elif form_type == "companies":
-        payload.update({"company": data.get("field1"), "phone": data.get("field2"), "field": data.get("field3"), "note": data.get("field4")})
-    elif form_type == "suggestions":
-        payload.update({"phone": data.get("field1"), "subject": data.get("field2"), "note": data.get("field3")})
-    elif form_type in ["organize", "classreq"]:
-        payload.update({"name": data.get("field1"), "title": data.get("field2"), "phone": data.get("field3")})
-
+    payload = {**data, "ID": new_id, "Date": get_now()}
+    
     try:
         res = requests.post(f"{SHEET_URL}/tabs/{target_tab}", json=payload)
         if res.status_code in [200, 201]:
-            return {"status": "success"}
-        return {"status": "error", "message": "SheetDB error"}
-    except:
-        raise HTTPException(status_code=500, detail="Server connection error")
-
+            return {"status": "success", "id": new_id}
+        else:
+            return {"status": "error", "message": "خطا در ثبت اطلاعات"}
+    except Exception as e:
+        return {"status": "error", "message": str(e)}
+        
 @app.get("/")
 async def serve_index(): return FileResponse("index.html")
