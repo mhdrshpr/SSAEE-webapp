@@ -214,13 +214,14 @@
         body:not(.loaded) {
         overflow: hidden;
         }
+        
         .btn-sponser.full {
         grid-column: span 2;
         position: relative;
         padding: 14px;
         background: #1a1a1a;
         color: #fff;
-        border: none; 
+        border: none;
         border-radius: 15px;
         cursor: pointer;
         font-family: 'Vazirmatn';
@@ -230,24 +231,29 @@
         align-items: center;
         justify-content: center;
         gap: 10px;
-        overflow: hidden; 
+        overflow: hidden;
         z-index: 1;
         }
 
         .btn-sponser.full::before {
         content: '';
         position: absolute;
-        width: 200%;
-        height: 200%;
-        background: conic-gradient(from 0deg, var(--accent), transparent 60deg, transparent);
-        animation: rotateBorder 5s linear infinite;
+        width: 180%;
+        height: 350%;
+        background: conic-gradient(
+        from 0deg,
+        transparent 0%,
+        var(--accent) 15%, 
+        transparent 30%
+        );
+        animation: rotateBorder 3s linear infinite;
         z-index: -2;
         }
 
         .btn-sponser.full::after {
         content: '';
         position: absolute;
-        inset: 2px; 
+        inset: 2px;
         background: #1a1a1a;
         border-radius: 13px;
         z-index: -1;
@@ -258,11 +264,11 @@
         100% { transform: rotate(360deg); }
         }
 
-        .btn-sponser i {
-        font-size: 18px;
-        color: var(--accent);
-        filter: drop-shadow(0 0 5px var(--accent));
+        .btn-sponser.full:hover {
+        box-shadow: 0 0 15px rgba(255, 204, 0, 0.2);
+        transition: 0.3s;
         }
+        
     </style>
 </head>
 
@@ -497,29 +503,29 @@
         <i class="fa-solid fa-xmark close-btn" onclick="closeAllM()"></i>
         <h3>فرم درخواست اسپانسرینگ</h3>
         
-        <input id="sp_brand" placeholder="نام برند یا شرکت (Brand)">
-        <input id="sp_interface" placeholder="نام رابط (Interface)">
+        <input id="sp_brand" placeholder="نام برند یا شرکت/برند">
+        <input id="sp_interface" placeholder="نام رابط حقیقی">
         
-        <select id="sp_type" onchange="toggleSponsorFields()">
+        <select id="sp_type" onchange="toggleSponsorFields()" style="margin-bottom: 10px;">
             <option value="" disabled selected>نوع حمایت (Type)</option>
             <option value="نقدی">حمایت مالی (نقدی)</option>
             <option value="غیرنقدی">خدمات و تجهیزات (غیرنقدی)</option>
         </select>
 
-        <div id="money_div" style="display:none;">
+        <div id="money_div" style="display:none; width: 100%;">
             <input id="sp_money" type="number" placeholder="مبلغ پیشنهادی به تومان (Money)">
         </div>
 
-        <div id="details_div" style="display:none;">
+        <div id="details_div" style="display:none; width: 100%;">
             <textarea id="sp_details" placeholder="شرح خدمات یا تجهیزات (Details)" rows="2"></textarea>
         </div>
 
-        <input id="sp_email" type="email" placeholder="ایمیل شرکت (Email)">
-        <input id="sp_phone" type="tel" placeholder="تلفن تماس رابط (Phone)">
-        <input id="sp_telegram" placeholder="آیدی تلگرام رابط (Telegram)">
-        <input id="sp_website" placeholder="وب‌سایت شرکت (Website)">
+        <input id="sp_email" type="email" placeholder="ایمیل شرکت ">
+        <input id="sp_phone" type="tel" placeholder="تلفن تماس رابط">
+        <input id="sp_telegram" placeholder="آیدی تلگرام رابط">
+        <input id="sp_website" placeholder="وب‌سایت شرکت">
         
-        <textarea id="sp_note" placeholder="توضیحات تکمیلی (Note)" rows="3"></textarea>
+        <textarea id="sp_note" placeholder="توضیحات تکمیلی" rows="3"></textarea>
 
         <button class="btn-sub" onclick="submitSponsor()">ثبت درخواست اسپانسرینگ</button>
     </div>
@@ -777,6 +783,22 @@
         Website: document.getElementById('sp_website').value,
         Note: document.getElementById('sp_note').value 
         };
+        function toggleSponsorFields() {
+            const type = document.getElementById('sp_type').value;
+            const moneyDiv = document.getElementById('money_div');
+            const detailsDiv = document.getElementById('details_div');
+
+          moneyDiv.style.display = 'none';
+          detailsDiv.style.display = 'none';
+
+        if (type === 'نقدی') {
+            moneyDiv.style.display = 'block';
+            document.getElementById('sp_details').value = ""; 
+            } else if (type === 'غیرنقدی') {
+                detailsDiv.style.display = 'block';
+                document.getElementById('sp_money').value = "";
+            }
+        }
 
         if (!data.Brand || !data.Interface || !type || !data.Email || !data.Phone || !data.Telegram || !data.Website || !data.Note) {
         showMsg("لطفاً تمام فیلدها را پر کنید. تمامی موارد (از جمله توضیحات) اجباری هستند.");
