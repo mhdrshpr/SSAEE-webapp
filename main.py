@@ -9,7 +9,7 @@ from datetime import datetime
 
 app = FastAPI()
 
-# تنظیمات استاتیک و کورز
+# --- تنظیمات استاتیک و کورز ---
 app.mount("/static", StaticFiles(directory="."), name="static")
 app.add_middleware(
     CORSMiddleware,
@@ -18,11 +18,41 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
+# --- دریافت متغیرهای محیطی از رندر ---
 SHEET_URL = os.getenv("SHEETBEST_URL")
+TELEGRAM_TOKEN = os.getenv("TELEGRAM_TOKEN") 
+CHAT_ID = os.getenv("CHAT_ID")              
 
 def get_now():
     return datetime.now().strftime("%Y-%m-%d")
 
+# --- تابع ارسال پیام به تلگرام ---
+def send_telegram_notification(form_type, entry_id):
+    """
+    ارسال نوتیفیکیشن خلاصه به تلگرام شامل نوع فرم و شناسه
+    """
+    if not TELEGRAM_TOKEN or not CHAT_ID:
+        return
+
+    message = (
+        f"✅ **ثبت فرم جدید**\n\n"
+        f"📂 نوع: {form_type}\n"
+        f"🆔 شناسه: `{entry_id}`\n"
+        f"📅 تاریخ: {get_now()}"
+    )
+    
+    url = f"https://api.telegram.org/bot{TELEGRAM_TOKEN}/sendMessage"
+    payload = {
+        "chat_id": CHAT_ID,
+        "text": message,
+        "parse_mode": "Markdown"
+    }
+    try:
+        requests.post(url, json=payload, timeout=5)
+    except Exception as e:
+        print(f"Telegram Notification Error: {e}")
+
+# --- روت‌های عمومی ---
 @app.get("/")
 async def serve_index():
     return FileResponse("index.html")
@@ -70,12 +100,13 @@ def download_cert(cert_id: str):
 @app.post("/api/members/req")
 def member_req(data: dict):
     new_id = f"MEM-{random.randint(1000, 9999)}"
-    # ارسال به صورت لیست برای پایداری در Sheet.best
+    
     payload = [{**data, "ID": new_id, "Date": get_now()}]
     
     response = requests.post(f"{SHEET_URL}/tabs/MembersReq", json=payload)
     
     if response.status_code in [200, 201]:
+        send_telegram_notification("عضویت جدید", new_id)
         return {"id": new_id}
     else:
         print(f"Member Req Error: {response.text}")
@@ -108,6 +139,7 @@ def member_upgrade(id: str):
         upd_res = requests.patch(update_url, json={"UpgradeReq": "TRUE"})
 
         if upd_res.status_code in [200, 201]:
+            send_telegram_notification("درخواست ارتقا عضویت", id)
             return {"status": "success"}
         return {"status": "error", "code": "UPDATE_FAILED"}
     except Exception as e:
@@ -123,7 +155,7 @@ def get_points(sid: str):
     except:
         return {"status": "error"}
 
-# --- بخش همکاری  ---
+# --- بخش همکاری ---
 @app.post("/api/collab/associations")
 def association_req(data: dict):
     new_id = f"ASC-{random.randint(1000, 9999)}"
@@ -143,6 +175,7 @@ def association_req(data: dict):
         res = requests.post(url, json=payload) 
         
         if res.status_code in [200, 201]:
+            send_telegram_notification("همکاری انجمن‌ها", new_id)
             return {"status": "success", "id": new_id}
         else:
             print(f"Sheet Error: {res.text}")
@@ -170,6 +203,7 @@ def teacher_req(data: dict):
         res = requests.post(url, json=payload)
         
         if res.status_code in [200, 201]:
+            send_telegram_notification("همکاری اساتید", new_id)
             return {"status": "success", "id": new_id}
         else:
             return {"status": "error", "message": "Database Error"}
@@ -193,6 +227,7 @@ def company_req(data: dict):
         res = requests.post(url, json=payload)
         
         if res.status_code in [200, 201]:
+            send_telegram_notification("همکاری شرکت‌ها", new_id)
             return {"status": "success", "id": new_id}
         else:
             return {"status": "error", "message": "Database Error"}
@@ -217,6 +252,7 @@ def feedback_req(data: dict):
         res = requests.post(url, json=payload)
         
         if res.status_code in [200, 201]:
+            send_telegram_notification("انتقاد و پیشنهاد", new_id)
             return {"status": "success", "id": new_id}
         else:
             return {"status": "error", "message": "Database Error"}
@@ -245,13 +281,14 @@ def sponsor_req(data: dict):
     response = requests.post(f"{SHEET_URL}/tabs/Sponsor", json=payload)
     
     if response.status_code in [200, 201]:
+        send_telegram_notification("درخواست اسپانسرینگ", new_id)
         return {"status": "success", "id": new_id}
     else:
         print(f"Sponsorship Error: {response.text}")
         raise HTTPException(status_code=500, detail="خطا در ثبت درخواست اسپانسرینگ")
 
 
-# --- بخش کارگاه و کلاس  ---
+# --- بخش کارگاه و کلاس ---
 @app.post("/api/workshop/req")
 def workshop_req(data: dict):
     new_id = f"WRQ-{random.randint(1000, 9999)}"
@@ -270,6 +307,7 @@ def workshop_req(data: dict):
         res = requests.post(url, json=payload)
         
         if res.status_code in [200, 201]:
+            send_telegram_notification("درخواست کارگاه", new_id)
             return {"status": "success", "id": new_id}
         else:
             return {"status": "error", "message": "Database Error"}
@@ -294,6 +332,7 @@ def class_req(data: dict):
         res = requests.post(url, json=payload)
         
         if res.status_code in [200, 201]:
+            send_telegram_notification("درخواست کلاس", new_id)
             return {"status": "success", "id": new_id}
         else:
             return {"status": "error", "message": "Database Error"}
