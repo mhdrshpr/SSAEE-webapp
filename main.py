@@ -18,10 +18,8 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
-# دریافت آدرس API از محیط (Render)
 SHEET_URL = os.getenv("SHEETBEST_URL")
 
-# تابع کمکی برای دریافت تاریخ شمسی یا میلادی فعلی
 def get_now():
     return datetime.now().strftime("%Y-%m-%d")
 
@@ -215,6 +213,54 @@ def feedback_req(data: dict):
     
     try:
         url = f"{SHEET_URL}/tabs/Suggestions"
+        res = requests.post(url, json=payload)
+        
+        if res.status_code in [200, 201]:
+            return {"status": "success", "id": new_id}
+        else:
+            return {"status": "error", "message": "Database Error"}
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=str(e))
+
+@app.post("/api/workshop/req")
+def workshop_req(data: dict):
+    new_id = f"WRQ-{random.randint(1000, 9999)}"
+    
+    payload = [{
+        "Phone": data.get("Phone"),
+        "Course": data.get("Course"),
+        "Teacher": data.get("Teacher") if data.get("Teacher") else "نامشخص",
+        "Time": data.get("Time") if data.get("Time") else "نامشخص",
+        "ID": new_id,
+        "Date": get_now()
+    }]
+    
+    try:
+        url = f"{SHEET_URL}/tabs/WorkshopReq"
+        res = requests.post(url, json=payload)
+        
+        if res.status_code in [200, 201]:
+            return {"status": "success", "id": new_id}
+        else:
+            return {"status": "error", "message": "Database Error"}
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=str(e))
+
+@app.post("/api/class/req")
+def class_req(data: dict):
+    new_id = f"CRQ-{random.randint(1000, 9999)}"
+    
+    payload = [{
+        "Phone": data.get("Phone"),
+        "Course": data.get("Course"),
+        "Teacher": data.get("Teacher") if data.get("Teacher") else "نامشخص",
+        "Time": data.get("Time") if data.get("Time") else "نامشخص",
+        "ID": new_id,
+        "Date": get_now()
+    }]
+    
+    try:
+        url = f"{SHEET_URL}/tabs/ClassReq"
         res = requests.post(url, json=payload)
         
         if res.status_code in [200, 201]:
