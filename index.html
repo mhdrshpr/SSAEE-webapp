@@ -269,59 +269,88 @@
         transition: 0.3s;
         }
 
-        .modal-bottom {
-        position: fixed;
-        bottom: 0;
-        left: 0;
-        width: 100%;
-        height: auto;
-        z-index: 2000; /* بالاتر از همه */
-        display: none; /* در ابتدا مخفی */
-        justify-content: center;
-        padding: 20px;
-        pointer-events: none;
-        }
+.modal-red-wrapper {
+    position: fixed;
+    bottom: 20px; 
+    left: 0;
+    width: 100%;
+    display: none;
+    justify-content: center;
+    align-items: flex-end;
+    z-index: 3000;
+    pointer-events: none; 
+}
 
-        .m-content-red {
-        pointer-events: auto;
-        background: linear-gradient(145.38deg, #4b0000 7.92%, #8b0000 86.04%);
-        border: 1px solid #ff4444;
-        box-shadow: 0px 0px 20px rgba(255, 0, 0, 0.4);
-        border-radius: 20px;
-        padding: 20px;
-        width: 100%;
-        max-width: 400px;
-        color: white;
-        text-align: center;
-         }
+.m-content-red {
+    pointer-events: auto; 
+    background: rgba(40, 0, 0, 0.95);
+    border: 1px solid #ff4444;
+    box-shadow: 0 0 20px rgba(255, 0, 0, 0.5);
+    border-radius: 15px;
+    padding: 15px 25px;
+    width: 90%;
+    max-width: 400px;
+    text-align: center;
+    backdrop-filter: blur(10px);
+}
 
-        .progress-container {
-        width: 100%;
-        height: 4px;
-        background: rgba(255, 255, 255, 0.1);
-        border-radius: 10px;
-        margin: 15px 0;
-        overflow: hidden;
-        }
+.red-info {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+    margin-bottom: 10px;
+}
 
-        .progress-bar {
-        width: 0%;
-        height: 100%;
-        background: #ff4444;
-        box-shadow: 0 0 10px #ff0000;
-        transition: width 0.1s linear;
-        }
+.red-dot {
+    width: 8px;
+    height: 8px;
+    background-color: #ff4444;
+    border-radius: 50%;
+    animation: blink 1s infinite;
+}
 
-        .btn-jump {
-        background: white;
-        color: #8b0000;
-        border: none;
-        padding: 8px 20px;
-        border-radius: 10px;
-        font-weight: bold;
-        cursor: pointer;
-        font-size: 0.8rem;
-        }
+.red-text {
+    color: white;
+    font-size: 0.9rem;
+    font-weight: bold;
+}
+
+.red-progress-container {
+    width: 100%;
+    height: 4px;
+    background: rgba(255, 255, 255, 0.1);
+    border-radius: 5px;
+    overflow: hidden;
+    margin-bottom: 12px;
+}
+
+.red-progress-bar {
+    width: 0%;
+    height: 100%;
+    background: #ff4444;
+    box-shadow: 0 0 10px #ff0000;
+    transition: width 0.1s linear;
+}
+
+.btn-red-jump {
+    background: #ff4444;
+    color: white;
+    border: none;
+    padding: 5px 15px;
+    border-radius: 8px;
+    font-size: 0.75rem;
+    cursor: pointer;
+    transition: 0.3s;
+}
+
+.btn-red-jump:hover { background: #ff0000; }
+
+@keyframes blink {
+    0% { opacity: 1; }
+    50% { opacity: 0.3; }
+    100% { opacity: 1; }
+}
     </style>
 </head>
 
@@ -584,16 +613,18 @@
     </div>
 </div>
     
-    <div id="redirectModal" class="modal-bottom">
+<div id="redirectModal" class="modal-red-wrapper">
     <div class="m-content-red">
-        <div class="red-header">
-            <span class="red-title">شما در حال انتقال به گروه تلگرام اعضا می‌باشید...</span>
-            <div class="red-loader"></div>
+        <div class="red-info">
+            <span class="red-dot"></span>
+            <span class="red-text">در حال انتقال به گروه تلگرام اعضا هستید...</span>
         </div>
-        <div class="progress-container">
-            <div id="redirectProgress" class="progress-bar"></div>
+        <div class="red-progress-container">
+            <div id="redirectProgress" class="red-progress-bar"></div>
         </div>
-        <button class="btn-jump" onclick="window.location.href='https://t.me/YOUR_LINK'">انتقال فوری</button>
+        <button class="btn-red-jump" onclick="window.location.href='https://t.me/+xPAcsn6cpc9lZmM0'">
+            انتقال فوری
+        </button>
     </div>
 </div>
     
@@ -684,6 +715,7 @@
                 else showMsg("فایل یافت نشد");
             } catch (e) { showMsg("خطا در دانلود"); } finally { hideL(); }
         }
+
 async function doMemberReq() {
     const data = {
         Name: document.getElementById('mn').value,
@@ -697,7 +729,7 @@ async function doMemberReq() {
         return; 
     }
 
-    showL(); 
+    showL();
 
     try {
         const response = await fetch(`${API}/members/req`, {
@@ -709,22 +741,18 @@ async function doMemberReq() {
         const res = await response.json();
 
         if (res.id) {
-            const sidElement = document.getElementById('successID');
-            if(sidElement) sidElement.innerText = res.id;
-            
-            const sModal = document.getElementById('successModal');
-            if(sModal) sModal.style.display = 'flex';
+            document.getElementById('successID').innerText = res.id;
+            document.getElementById('successModal').style.display = 'flex';
 
             showRedRedirect('https://t.me/+xPAcsn6cpc9lZmM0');
             
-            closeAllM(); 
         } else {
             showMsg("خطا در پاسخ سرور");
         }
     } catch (e) {
-        showMsg("خطا در ثبت درخواست");
+        showMsg("خطا در ارتباط با سرور");
     } finally {
-        hideL();
+        hideL(); 
     }
 }
 
@@ -737,7 +765,7 @@ function showRedRedirect(url) {
     
     let width = 0;
     const interval = setInterval(() => {
-        width += 1.5; 
+        width += 1.3;  
         progressBar.style.width = width + '%';
         if (width >= 100) {
             clearInterval(interval);
