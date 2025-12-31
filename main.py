@@ -177,3 +177,49 @@ def teacher_req(data: dict):
             return {"status": "error", "message": "Database Error"}
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))
+
+@app.post("/api/collab/companies")
+def company_req(data: dict):
+    new_id = f"COM-{random.randint(1000, 9999)}"
+    
+    payload = [{
+        "Name": data.get("Name"),
+        "Phone": data.get("Phone"),
+        "Note": data.get("Note"),
+        "ID": new_id,
+        "Date": get_now()
+    }]
+    
+    try:
+        url = f"{SHEET_URL}/tabs/Companies"
+        res = requests.post(url, json=payload)
+        
+        if res.status_code in [200, 201]:
+            return {"status": "success", "id": new_id}
+        else:
+            return {"status": "error", "message": "Database Error"}
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=str(e))
+@app.post("/api/feedback")
+def feedback_req(data: dict):
+    new_id = f"FDB-{random.randint(1000, 9999)}"
+    
+    payload = [{
+        "Subject": data.get("Subject"),
+        "Unit": data.get("Unit"),
+        "Phone": data.get("Phone"),
+        "Note": data.get("Note"),
+        "ID": new_id,
+        "Date": get_now()
+    }]
+    
+    try:
+        url = f"{SHEET_URL}/tabs/Suggestions"
+        res = requests.post(url, json=payload)
+        
+        if res.status_code in [200, 201]:
+            return {"status": "success", "id": new_id}
+        else:
+            return {"status": "error", "message": "Database Error"}
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=str(e))
