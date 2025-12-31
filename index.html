@@ -241,10 +241,13 @@ body {
 <div id="mReqM" class="modal" onclick="closeAllM()">
     <div class="m-content" onclick="event.stopPropagation()">
         <i class="fa-solid fa-xmark close-btn" onclick="closeAllM()"></i>
+        <h3>فرم درخواست عضویت در انجمن</h3>
         <input id="mn" placeholder="نام کامل">
         <input id="mi" placeholder="کد ملی">
         <input id="ms" placeholder="کد دانشجویی">
-        <button class="btn-sub" onclick="doMemberReq()">ثبت نام</button>
+        <input id="ph" type="tel" placeholder="شماره تماس">
+
+        <button class="btn-sub" onclick="doMemberReq()">ارسال درخواست</button>
     </div>
 </div>
 
@@ -371,21 +374,38 @@ body {
     }
 
     // اعضا
-    async function doMemberReq() {
-        const data = { Name: document.getElementById('mn').value, NationalID: document.getElementById('mi').value, StudentID: document.getElementById('ms').value };
-        
-        if(!data.Name || !data.StudentID) { showMsg("لطفاً نام و شماره دانشجویی را وارد کنید"); return; }
-
-        showL();
-        try {
-            const res = await fetch(`${API}/members/req`, { method:'POST', headers:{'Content-Type':'application/json'}, body:JSON.stringify(data) }).then(r=>r.json());
-            hideL(); 
-            showMsg(`ثبت نام انجام شد.<br>کد شناسایی شما: <b>${res.id}</b>`);
-        } catch(e) {
-            hideL();
-            showMsg("خطا در ثبت درخواست");
-        }
+async function doMemberReq() {
+    const data = { 
+        Name: document.getElementById('mn').value, 
+        NationalID: document.getElementById('mi').value, 
+        StudentID: document.getElementById('ms').value,
+        Phone: document.getElementById('ph').value
+    };
+    
+    if(!data.Name || !data.StudentID || !data.Phone) { 
+        showMsg("لطفاً تمامی فیلدها را وارد کنید"); 
+        return; 
     }
+
+    showL();
+    try {
+        const res = await fetch(`${API}/members/req`, { 
+            method:'POST', 
+            headers:{'Content-Type':'application/json'}, 
+            body:JSON.stringify(data) 
+        }).then(r=>r.json());
+        
+        hideL(); 
+        if (res.id) {
+            showMsg(`ثبت نام انجام شد.<br>کد شناسایی شما: <b>${res.id}</b>`);
+        } else {
+            showMsg("خطا در پاسخ سرور");
+        }
+    } catch(e) {
+        hideL();
+        showMsg("خطا در ثبت درخواست");
+    }
+}
 
     async function doGetCard() {
         const id = document.getElementById('sci').value;
