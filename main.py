@@ -56,9 +56,15 @@ def download_cert(cert_id: str):
 @app.post("/api/members/req")
 def member_req(data: dict):
     new_id = f"MEM-{random.randint(1000, 9999)}"
+    
     payload = {**data, "ID": new_id, "Date": get_now()}
-    requests.post(f"{SHEET_URL}/tabs/MembersReq", json=payload)
-    return {"id": new_id}
+    
+    response = requests.post(f"{SHEET_URL}/tabs/MembersReq", json=payload)
+    
+    if response.status_code == 201 or response.status_code == 200:
+        return {"id": new_id}
+    else:
+        raise HTTPException(status_code=500, detail="خطا در پردازش اطلاعات")
 
 @app.get("/api/members/card/{sid}")
 def get_card(sid: str):
