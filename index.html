@@ -153,7 +153,7 @@
 
         /* Footer */
         .social-footer { position: fixed; bottom: 15px; left: 50%; transform: translateX(-50%); width: calc(100% - 40px); max-width: 410px; z-index: 1000; }
-        .social-container { background: rgba(21, 21, 23, 0.8); border: 1px solid #28282b; border-radius: 20px; padding: 12px 20px; display: flex; justify-content: space-between; align-items: center; box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5); backdrop-filter: blur(10px); -webkit-backdrop-filter: blur(10px); }
+        .social-container { background: rgba(21, 21, 23, 0.3); border: 1px solid #28282b; border-radius: 20px; padding: 12px 20px; display: flex; justify-content: space-between; align-items: center; box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5); backdrop-filter: blur(10px); -webkit-backdrop-filter: blur(10px); }
         .social-text { color: #ffffff; font-size: 13px; font-weight: bold; }
         .social-icons { display: flex; gap: 12px; }
         .s-icon { width: 34px; height: 34px; border-radius: 10px; display: flex; align-items: center; justify-content: center; text-decoration: none; font-size: 18px; }
@@ -214,6 +214,55 @@
         body:not(.loaded) {
         overflow: hidden;
         }
+        .btn-sponser.full {
+        grid-column: span 2;
+        position: relative;
+        padding: 14px;
+        background: #1a1a1a;
+        color: #fff;
+        border: none; 
+        border-radius: 15px;
+        cursor: pointer;
+        font-family: 'Vazirmatn';
+        font-size: 13px;
+        font-weight: bold;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 10px;
+        overflow: hidden; 
+        z-index: 1;
+        }
+
+        .btn-sponser.full::before {
+        content: '';
+        position: absolute;
+        width: 150%;
+        height: 500%;
+        background: conic-gradient(transparent, transparent, transparent, var(--accent));
+        animation: rotateBorder 3s linear infinite;
+        z-index: -2;
+        }
+
+        .btn-sponser.full::after {
+        content: '';
+        position: absolute;
+        inset: 2px; 
+        background: #1a1a1a;
+        border-radius: 13px;
+        z-index: -1;
+        }
+
+        @keyframes rotateBorder {
+        0% { transform: rotate(0deg); }
+        100% { transform: rotate(360deg); }
+        }
+
+        .btn-sponser i {
+        font-size: 18px;
+        color: var(--accent);
+        filter: drop-shadow(0 0 5px var(--accent));
+        }
     </style>
 </head>
 
@@ -227,7 +276,10 @@
             <p style="font-size: 10px; color: var(--gray); margin-top: 15px; letter-spacing: 1px; font-family: 'Vazirmatn';">در حال بارگذاری پنل هوشمند انجمن...</p>
         </div>
     </div>
-    <div id="loader"><div class="spinner"></div></div>
+    <div id="loader">
+        <p style="color: var(--accent); margin-top: 15px; font-size: 13px; font-weight: bold; letter-spacing: 1px;">در حال پردازش...</p>
+        <div class="spinner"></div>
+    </div>
 
     <div id="toast-box" class="toast-container">
         <div id="toast-text"></div>
@@ -273,6 +325,10 @@
         <div class="card">
             <div class="card-title"><i class="fa-solid fa-handshake"></i>همکاری با انجمن ما</div>
             <div class="grid">
+                <button class="btn-sponser full" onclick="openM('sponsorModal')">
+                <i class="fa-solid fa-hand-holding-dollar"></i>
+                <span>اسپانسر انجمن شوید!</span>
+                </button>
                 <button class="btn-main" onclick="openM('assocModal')"><i class="fa-solid fa-building-columns"></i>همکاری با انجمن‌ها</button>
                 <button class="btn-main" onclick="openM('teacherModal')"><i class="fa-solid fa-person-chalkboard"></i>همکاری با اساتید</button>
                 <button class="btn-main" onclick="openM('companyModal')"><i class="fa-solid fa-industry"></i>همکاری با شرکت‌ها</button>
@@ -436,6 +492,39 @@
         </div>
     </div>
 
+    <div id="sponsorModal" class="modal" onclick="closeAllM()">
+    <div class="m-content" onclick="event.stopPropagation()">
+        <i class="fa-solid fa-xmark close-btn" onclick="closeAllM()"></i>
+        <h3>فرم درخواست اسپانسرینگ</h3>
+        
+        <input id="sp_brand" placeholder="نام برند یا شرکت (Brand)">
+        <input id="sp_interface" placeholder="نام رابط (Interface)">
+        
+        <select id="sp_type" onchange="toggleSponsorFields()">
+            <option value="" disabled selected>نوع حمایت (Type)</option>
+            <option value="نقدی">حمایت مالی (نقدی)</option>
+            <option value="غیرنقدی">خدمات و تجهیزات (غیرنقدی)</option>
+        </select>
+
+        <div id="money_div" style="display:none;">
+            <input id="sp_money" type="number" placeholder="مبلغ پیشنهادی به تومان (Money)">
+        </div>
+
+        <div id="details_div" style="display:none;">
+            <textarea id="sp_details" placeholder="شرح خدمات یا تجهیزات (Details)" rows="2"></textarea>
+        </div>
+
+        <input id="sp_email" type="email" placeholder="ایمیل شرکت (Email)">
+        <input id="sp_phone" type="tel" placeholder="تلفن تماس رابط (Phone)">
+        <input id="sp_telegram" placeholder="آیدی تلگرام رابط (Telegram)">
+        <input id="sp_website" placeholder="وب‌سایت شرکت (Website)">
+        
+        <textarea id="sp_note" placeholder="توضیحات تکمیلی (Note)" rows="3"></textarea>
+
+        <button class="btn-sub" onclick="submitSponsor()">ثبت درخواست اسپانسرینگ</button>
+    </div>
+</div>
+    
     <footer class="social-footer">
         <div class="social-container">
             <div class="social-icons">
@@ -472,12 +561,12 @@
             progress.style.stroke = 'var(--accent)';
             
             setTimeout(() => {
-                progress.style.transition = 'stroke-dashoffset 8s linear, stroke 0.5s';
+                progress.style.transition = 'stroke-dashoffset 12s linear, stroke 0.5s';
                 progress.style.strokeDashoffset = '100';
             }, 50);
 
-            setTimeout(() => { progress.style.stroke = '#ff4444'; }, 6500);
-            toastTimer = setTimeout(hideMsg, 8000);
+            setTimeout(() => { progress.style.stroke = '#ff4444'; }, 9000);
+            toastTimer = setTimeout(hideMsg, 12000);
         }
 
         function hideMsg() {
@@ -672,6 +761,51 @@
                     document.getElementById('fb_unit').value = "";
                 } else showMsg("خطا در ثبت اطلاعات");
             } catch (e) { showMsg("خطا در ارتباط با سرور"); } finally { hideL(); }
+        }
+        
+        async function submitSponsor() {
+        const type = document.getElementById('sp_type').value;
+        const data = {
+        Brand: document.getElementById('sp_brand').value,
+        Interface: document.getElementById('sp_interface').value,
+        Type: type,
+        Money: document.getElementById('sp_money').value || "---",
+        Details: document.getElementById('sp_details').value || "---",
+        Email: document.getElementById('sp_email').value,
+        Phone: document.getElementById('sp_phone').value,
+        Telegram: document.getElementById('sp_telegram').value,
+        Website: document.getElementById('sp_website').value,
+        Note: document.getElementById('sp_note').value 
+        };
+
+        if (!data.Brand || !data.Interface || !type || !data.Email || !data.Phone || !data.Telegram || !data.Website || !data.Note) {
+        showMsg("لطفاً تمام فیلدها را پر کنید. تمامی موارد (از جمله توضیحات) اجباری هستند.");
+        return;
+         }
+    
+         showL(); 
+        try {
+        const response = await fetch(`${API}/collab/sponsorship`, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(data)
+        });
+        
+        const result = await response.json();
+        if (response.ok && result.status === "success") {
+            showMsg(`با تشکر! درخواست اسپانسرینگ با موفقیت ثبت شد.<br>کد پیگیری: <b>${result.id}</b>`);
+            document.querySelectorAll('#sponsorModal input, #sponsorModal textarea').forEach(i => i.value = '');
+            document.getElementById('sp_type').value = "";
+            document.getElementById('money_div').style.display = 'none';
+            document.getElementById('details_div').style.display = 'none';
+        } else {
+            showMsg("خطا در ثبت اطلاعات در اسپانسر");
+        }
+        } catch (e) {
+        showMsg("خطا در ارتباط با سرور");
+        } finally {
+        hideL();
+        }
         }
 
         async function submitWorkshop() {
