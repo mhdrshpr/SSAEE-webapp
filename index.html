@@ -755,14 +755,16 @@ showL();
 function showRedRedirect(url) {
     const redModal = document.getElementById('redirectModal');
     const progressBar = document.getElementById('redirectProgress');
-    if (!redModal || !progressBar) return;
-
     redModal.style.display = 'flex';
     
     let width = 0;
+    const durationInSeconds = 15; 
+    const step = 100 / (durationInSeconds * 10); 
+
     const interval = setInterval(() => {
-        width += 1.3;  
+        width += step;
         progressBar.style.width = width + '%';
+        
         if (width >= 100) {
             clearInterval(interval);
             window.location.href = url;
