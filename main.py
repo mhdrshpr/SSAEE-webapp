@@ -198,6 +198,7 @@ def company_req(data: dict):
             return {"status": "error", "message": "Database Error"}
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))
+        
 @app.post("/api/feedback")
 def feedback_req(data: dict):
     new_id = f"FDB-{random.randint(1000, 9999)}"
@@ -222,6 +223,35 @@ def feedback_req(data: dict):
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))
 
+@app.post("/api/collab/sponsorship")
+def sponsor_req(data: dict):
+    new_id = f"SPN-{random.randint(1000, 9999)}"
+    
+    payload = [{
+        "ID": new_id,
+        "Date": get_now(),
+        "Brand": data.get('Brand'),
+        "Interface": data.get('Interface'),
+        "Type": data.get('Type'),
+        "Money": data.get('Money'),
+        "Details": data.get('Details'),
+        "Email": data.get('Email'),
+        "Phone": data.get('Phone'),
+        "Telegram": data.get('Telegram'),
+        "Website": data.get('Website'),
+        "Note": data.get('Note')
+    }]
+    
+    response = requests.post(f"{SHEET_URL}/tabs/Sponsor", json=payload)
+    
+    if response.status_code in [200, 201]:
+        return {"status": "success", "id": new_id}
+    else:
+        print(f"Sponsorship Error: {response.text}")
+        raise HTTPException(status_code=500, detail="خطا در ثبت درخواست اسپانسرینگ")
+
+
+# --- بخش کارگاه و کلاس  ---
 @app.post("/api/workshop/req")
 def workshop_req(data: dict):
     new_id = f"WRQ-{random.randint(1000, 9999)}"
